@@ -1,0 +1,6 @@
+project(LOGISTICREGRESSION)
+include_directories(.)
+aux_source_directory(model src_model)
+aux_source_directory(system src_system)
+aux_source_directory(util src_util)
+add_executable(LR ${src_model} ${src_system} ${src_util})
