@@ -4,6 +4,7 @@
 #include <vector>
 #include "util/Sample.h"
 #include <cmath>
+#include "ps/ps.h"
 using namespace std;
 
 
@@ -21,6 +22,7 @@ class Model
 private:
     int _num;
     vector<ElemType> *_model;
+    ps::KVWorker<ElemType> * _kv;
 
 public:
     Model(int num = 1);
@@ -46,6 +48,7 @@ template <class ElemType>
 Model<ElemType>::~Model()
 {
     delete[] _model;
+    delete _kv;
 }
 
 template <class ElemType>
