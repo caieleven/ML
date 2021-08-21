@@ -56,14 +56,14 @@ void ClasTree::train(Sample*sample)
 	//random generate feature index
 	int*_featureIndex=new int[_trainFeatureNumPerNode];
     Sample*nodeSample=new Sample(sample,0,sample->getSelectedSampleNum()-1);
-	_cartreeArray[0]=new ClasNode();//共有_nodeNum个 满二叉树，根据深度可以求出
+	_cartreeArray[0]=new ClasNode();
 	_cartreeArray[0]->_samples=nodeSample;
 	//calculate the probablity and gini
 	_cartreeArray[0]->calculateParams();
-	for(int i=0;i<_nodeNum;++i)//层序遍历
+	for(int i=0;i<_nodeNum;++i)//???????
 	{
 		int parentId=(i-1)/2;
-		//if current node's parent node is NULL,continue 根节点会参与以下计算
+		//if current node's parent node is NULL,continue ????????????????
 		if(_cartreeArray[parentId]==NULL)
 		{continue;}
 		//if the current node's parent node is a leaf,continue
@@ -71,7 +71,7 @@ void ClasTree::train(Sample*sample)
 		{continue;}
 		//if it reach the max depth
 		//set current node as a leaf and continue
-		if(i*2+1>=_nodeNum)  //if left child node is out of range//如果左孩子超出，右孩子肯定超出
+		if(i*2+1>=_nodeNum)  //if left child node is out of range//???????????????????????
 		{
 			_cartreeArray[i]->createLeaf();
 			continue;

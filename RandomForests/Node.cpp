@@ -13,21 +13,21 @@ Node::~Node()
 {
 }
 
-//根据feature，给sampleindex排序，升序
+//锟斤拷锟斤拷feature锟斤拷锟斤拷sampleindex锟斤拷锟斤拷锟斤拷锟斤拷
 void Node::sortIndex(int featureId)
 {
 	float**data=_samples->_dataset;
 	int*sampleId=_samples->getSampleIndex();
 	Pair*pairs=new Pair[_samples->getSelectedSampleNum()];
-	for(int i=0;i<_samples->getSelectedSampleNum();++i)//将feature与sample对应的sample索引配对
+	for(int i=0;i<_samples->getSelectedSampleNum();++i)//锟斤拷feature锟斤拷sample锟斤拷应锟斤拷sample锟斤拷锟斤拷锟斤拷锟?
 	{
 		pairs[i].id=sampleId[i];
 		pairs[i].feature=data[sampleId[i]][featureId];
 	}
-	//升序
+	//锟斤拷锟斤拷
 	qsort(pairs,_samples->getSelectedSampleNum(),sizeof(Pair),compare_pair);
 	for(int i=0;i<_samples->getSelectedSampleNum();++i)
-	{sampleId[i]=pairs[i].id;}//不影响原数据
+	{sampleId[i]=pairs[i].id;}//锟斤拷影锟斤拷原锟斤拷锟斤拷
 	delete[] pairs;
 }
 
@@ -57,7 +57,7 @@ ClasNode::~ClasNode()
 	}
 }
 
-void ClasNode::calculateParams()//计算_gini
+void ClasNode::calculateParams()//锟斤拷锟斤拷_gini
 {
 	int i=0;
 	int*sampleId=_samples->getSampleIndex();
@@ -65,13 +65,13 @@ void ClasNode::calculateParams()//计算_gini
 	int classNum=_samples->getClassNum();
 	float gini=0;
 	_probs=new float[classNum];
-	for(i=0;i<classNum;++i)// prob初始化为0
+	for(i=0;i<classNum;++i)// prob锟斤拷始锟斤拷为0
 	{_probs[i]=0;}
 	for(i=0;i<sampleNum;++i)
-	{_probs[static_cast<int>(_samples->_labels[sampleId[i]])]++;}//所选中的样本的标签++  即计算该标签在选中样本中出现的频数
+	{_probs[static_cast<int>(_samples->_labels[sampleId[i]])]++;}//锟斤拷选锟叫碉拷锟斤拷锟斤拷锟侥憋拷签++  锟斤拷锟斤拷锟斤拷帽锟角╋拷锟窖★拷锟斤拷锟斤拷锟斤拷谐锟斤拷值锟狡碉拷锟?
 	for(i=0;i<classNum;++i)
 	{
-		float p=_probs[i]/sampleNum;//p为概率
+		float p=_probs[i]/sampleNum;//p为锟斤拷锟斤拷
 		gini+=(p*p);
 	}
 	_gini=1-gini;
@@ -126,12 +126,12 @@ void ClasNode::calculateInfoGain(Node**nodeArray,int id,float minInfoGain)
 		fMaxGiniRight=0;
 		fMaxThreshold=0;
 		fMaxSamplesOnLeft=0;
-		for(j=0;j<classNum;++j)  //初始化fMaxProbsLeft与fMaxProbsRight为0
+		for(j=0;j<classNum;++j)  
 		{
 			fMaxProbsLeft[j]=0;
 			fMaxProbsRight[j]=0;
 		}
-        //sort samples by current feature，升序
+        //sort samples by current feature锟斤拷锟斤拷锟斤拷
 		sortIndex(featureId[i]);
 		//initialize the probsLeft&probsRight
 		for(k=0;k<classNum;++k)
@@ -140,7 +140,7 @@ void ClasNode::calculateInfoGain(Node**nodeArray,int id,float minInfoGain)
 			probsRight[k]=0;
 		}
 		memcpy(probsRight,_probs,sizeof(float)*classNum);
-		for(j=0;j<sampleNum-1;++j)//sampleNum 为选中的sample
+		for(j=0;j<sampleNum-1;++j)
 		{
 			giniLeft=0;
 			giniRight=0;
@@ -150,21 +150,21 @@ void ClasNode::calculateInfoGain(Node**nodeArray,int id,float minInfoGain)
             //do not do calculation if the nearby samples' feature are too similar(<0.000001)
 			if((data[sampleId[j+1]][featureId[i]]-data[sampleId[j]][featureId[i]])<0.000001)
 			{continue;}
-			//计算左gini
+			//锟斤拷锟斤拷锟斤拷gini
 			for(k=0;k<classNum;++k)
 			{
 				float p=probsLeft[k]/(j+1);
 				giniLeft+=(p*p);
 			}
 			giniLeft=1-giniLeft;
-			//计算右gini
+			//锟斤拷锟斤拷锟斤拷gini
 			for(k=0;k<classNum;++k)
 			{
 				float p=probsRight[k]/(sampleNum-j-1);
 				giniRight+=(p*p);
 			}
 			giniRight=1-giniRight;
-			//左右样本所占比例
+			//锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷占锟斤拷锟斤拷
 			float leftRatio=(j+1.0)/sampleNum;
 			float rightRatio=(sampleNum-j-1.0)/sampleNum;
 			infoGain=_gini-leftRatio*giniLeft-rightRatio*giniRight;
