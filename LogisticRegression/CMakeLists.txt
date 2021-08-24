@@ -1,5 +1,5 @@
 project(LOGISTICREGRESSION)
-include_directories(.)
+include_directories(${PROJECT_SOURCE_DIR} ${PROJECT_SOURCE_DIR/ps-lite/include})
 aux_source_directory(model src_model)
 aux_source_directory(system src_system)
 aux_source_directory(util src_util)
