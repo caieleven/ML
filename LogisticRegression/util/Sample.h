@@ -6,86 +6,64 @@
 #include <iostream>
 using namespace std;
 
-//feature数为colnum-1
-//最后一个feature为1
 
-template <class ElemType>
+/*
+ * @brief store one sample, the first feature = 1
+ */
+typedef struct Data
+{
+    int label;
+    vector<float> features;
+};
+
+/*
+ *@brief to load the training data
+ */
+
 class Sample
 {
 private:
-    vector<vector<ElemType> > *_features;
-    vector<int> *_label;
-    int _rowNum;
-    int _colNum;
+    // all fo the training data
+    vector<Data> _samples;
+
+    // indicate how much data has been used
+    long long int _progress = 0;
 
 public:
-    Sample(const char* dataPath = NULL, int rowNum = 1, int colNum = 1);
-    ~Sample();
-    void getSampleByIndex(int index, vector<ElemType> &rowSample, int &label);
-    int getDataRawNum();
-    int getDataColNum();
+    //used for training, can be accessed directly
+    vector<Data> batch_data;  
+    int batch_size;
+
+    /*
+     * @brief constructor
+     * @param rowNum the number of data
+     * @param colNum equals feature_num - 1
+     */
+    Sample(const char* dataPath = NULL, int rowNum = 0, int colNum = 0, int batchsize = 10);
+
+
+    
+
+    /*
+     * @return feature num
+     */ 
+    int getFeatureNum();
+
+    /*
+     * @return if true, success
+     */
+    bool loadNextMinibatchSample();
+
+    // /*
+    //  * @brief indicate if all the data has been used
+    //  * @return true:this epoch is end
+    //  */
+    // bool end();
 
 };
 
-template <class ElemType>
-Sample<ElemType>::Sample(const char* dataPath, int rowNum, int colNum):_rowNum(rowNum), _colNum(colNum)
-{
-    ifstream file;
-    int tempLabel;
-    
-    _features = new vector<vector<ElemType> >;
-    _label = new vector<int>;
-    file.open(dataPath);
-    if(file.fail())
-    {
-        cout << "文件打开失败" << endl;
-        file.close();
-        return;
-    }
-    vector<ElemType> tempvec(_colNum);
-    tempvec[_colNum - 1] = 1;
-    //ifstream file(dataPath);
-    for (int i = 0; i < _rowNum; i++)
-    {
-        for (int j = 0; j < _colNum; j++)
-            file >> tempvec[j];
 
 
-        _features->push_back(tempvec);
-        file >> tempLabel;
-        _label->push_back(tempLabel);
-    }
-    file.close();
-}
-
-
-template <class ElemType>
-Sample<ElemType>::~Sample()
-{
-    delete _features;
-    delete _label;
-}
-
-
-template <class ElemType>
-int Sample<ElemType>::getDataColNum()
-{
-    return _colNum;
-}
-
-
-template <class ElemType>
-int Sample<ElemType>::getDataRawNum()
-{
-    return _rowNum;
-}
-
-template <class ElemType>
-void Sample<ElemType>::getSampleByIndex(int index, vector<ElemType> &rowSample, int &label)
-{
-    (*_features)[index].assign(rowSample.begin(), rowSample.end());
-    label = (*_label)[index];
-}
 
 
 #endif

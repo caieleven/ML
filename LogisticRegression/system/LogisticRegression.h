@@ -19,7 +19,6 @@ public:
 private:
     Configure _config;
     Model<float> _model;
-    Sample<float> *_sample;
 };
 
 #endif
