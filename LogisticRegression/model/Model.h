@@ -9,7 +9,11 @@
 using namespace std;
 
 
-float sigmoid();
+void sigmoid(float& x)
+{
+    double ex = pow(2.718281828, x);
+    x = ex / (1.0 + ex);
+}
 
 
 /*
@@ -107,7 +111,7 @@ public:
      * @param gradient the gradient used to push
      * @param alpha the learing rate
      */
-    void calculateGradient(vector<float> loss, vector<float> gradient, float alpha);
+    void calculateGradient(vector<float> loss, vector<Data>& batchdata, vector<float> gradient, float alpha);
 
 
     void saveModel(Configure& config);
@@ -115,7 +119,8 @@ public:
     /*
      * @param config the configure file from LR
      */
-    void train(Configure& config);
+    void train(Configure& config, Sample& sample);
+    friend void sigmoid(float& x);
 
 private:
     ps::KVWorker<float>* _kv;
@@ -127,12 +132,12 @@ Model::Model()
 }
 
 
-Model::train(Configure& config)
+void Model::train(Configure& config, Sample& sample)
 {
-    Sample sample(config._train_file, config._input_size, config._feature_num, config._minibatch_size);
+    //Sample sample(config._train_file, config._input_size, config._feature_num, config._minibatch_size);
     vector<ps::Key> keys(sample.getFeatureNum());
-    vector<float> weight;
-    vector<float> gradient;
+    vector<float> weight(sample.getFeatureNum());
+    vector<float> gradient(sample.getFeatureNum());
     vector<float> loss(config._minibatch_size);
     for(int i = 0; i < sample.getFeatureNum(); i++)
         keys[i] = i;
@@ -141,20 +146,44 @@ Model::train(Configure& config)
     {
         _kv->Wait(_kv->Pull(keys, &weight));
         calculateLoss(weight, sample.batch_data, loss);
-        calculateGradient(loss, gradient, config._alpha);
+        calculateGradient(loss,sample.batch_data, gradient, config._alpha);
         _kv->Wait(_kv->Push(keys, gradient));
     }
 }
 
 void Model::calculateLoss(vector<float>& weight, vector<Data>& batchdata, vector<float>& loss)
 {
-
+    float tempValue;
+    loss.clear();
+    for(int i = 0; i < batchdata.size(); i++)
+    {
+        tempValue = 0;
+        for(int j = 0; j < weight.size(); j++)
+        {
+            tempValue += weight[j] * batchdata[i].features[j];
+        }
+        tempValue = sigmoid(tempValue) - batchdata[i].label;
+        loss.push_back(tempValue);
+    }
 }
 
 
-void Model::calculateGradient(vector<float> loss, vector<float> gradient, float alpha)
+void Model::calculateGradient(vector<float> loss, vector<Data> batchdata, vector<float> gradient, float alpha)
 {
-    
+    float meanLoss = 0;
+    for(int i = 0; i < loss.size(); i++)
+        meanLoss += loss[i];
+    meanLoss /= loss.size();
+    for(int i = 0; i < gradient.size(); i++)
+    {
+        meanLoss = 0;
+        for(int j = 0; j < loss.size(); j++)
+        {
+            meanLoss += loss[j] * batchdata[j].features[i];
+        }
+        meanLoss /= loss.size();
+        gradient[i] = alpha * meanLoss;
+    }
 }
 
 
