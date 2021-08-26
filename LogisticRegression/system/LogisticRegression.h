@@ -7,18 +7,26 @@
 class LogisticRegression
 {
 public:
+
+    /*
+     * @param config_file the file path of configure file
+     */
     LogisticRegression(char *config_file);
     ~LogisticRegression();
 
     void train();
     void saveModel();
     void loadModel();
-    void predict();
 
+
+    void predict();
 
 private:
     Configure _config;
-    Model<float> _model;
+    Model _model;
 };
+
+
+
 
 #endif
