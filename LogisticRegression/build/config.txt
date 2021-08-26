@@ -1,7 +1,0 @@
-1
-10
-3
-3
-0.05
-train.txt
-test.txt

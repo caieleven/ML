@@ -8,12 +8,12 @@ endif
 # protobuf
 PROTOBUF = ${DEPS_PATH}/include/google/protobuf/message.h
 ${PROTOBUF}:
-	$(eval FILE=protobuf-2.5.0.tar.gz)
-	$(eval DIR=protobuf-2.5.0)
+	$(eval FILE=protobuf-3.17.3.tar.gz)
+	$(eval DIR=protobuf-3.17.3)
 	#rm -rf $(FILE) $(DIR)
 	#$(WGET) $(URL)/$(FILE) && tar --no-same-owner -zxf $(FILE)
-	rm -rf $(DIR)
-	tar --no-same-owner -zxf $(FILE)
+	#rm -rf $(DIR)
+	#tar --no-same-owner -zxf $(FILE)
 	cd $(DIR) && export CFLAGS=-fPIC && export CXXFLAGS=-fPIC && ./configure -prefix=$(DEPS_PATH) && $(MAKE) && $(MAKE) install
 	rm -rf $(DIR)
 	#rm -rf $(FILE) $(DIR)
@@ -38,7 +38,8 @@ ${LZ4}:
 	$(eval FILE=lz4-r129.tar.gz)
 	$(eval DIR=lz4-r129)
 	rm -rf $(FILE) $(DIR)
-	wget $(URL)/$(FILE) && tar --no-same-owner -zxf $(FILE)
+	#wget $(URL)/$(FILE) && 
+	tar --no-same-owner -zxf $(FILE)
 	cd $(DIR) && $(MAKE) && PREFIX=$(DEPS_PATH) $(MAKE) install
 	rm -rf $(FILE) $(DIR)
 
@@ -48,7 +49,8 @@ ${CITYHASH}:
 	$(eval FILE=cityhash-1.1.1.tar.gz)
 	$(eval DIR=cityhash-1.1.1)
 	rm -rf $(FILE) $(DIR)
-	wget $(URL)/$(FILE) && tar --no-same-owner -zxf $(FILE)
+	#wget $(URL)/$(FILE) && 
+	tar --no-same-owner -zxf $(FILE)
 	cd $(DIR) && ./configure -prefix=$(DEPS_PATH) --enable-sse4.2 && $(MAKE) CXXFLAGS="-g -O3 -msse4.2" && $(MAKE) install
 	rm -rf $(FILE) $(DIR)
 

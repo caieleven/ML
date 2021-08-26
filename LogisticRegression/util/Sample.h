@@ -10,7 +10,7 @@ using namespace std;
 /*
  * @brief store one sample, the first feature = 1
  */
-typedef struct Data
+struct Data
 {
     int label;
     vector<float> features;
