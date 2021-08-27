@@ -12,6 +12,13 @@ using namespace std;
 
 void sigmoid(float& x);
 
+
+/*
+ * @TODO add multithreading || 
+ *       print some information when program runing ||
+ *       overload predict() which can reture the result
+ */
+
 class Model
 {
 public:

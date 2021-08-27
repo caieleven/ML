@@ -2,6 +2,14 @@
 #include "ps/ps.h"
 using namespace std;
 
+
+/*
+ * @TODO rewrite the KVServerHandle ||
+ *       add the starting script
+ */
+
+
+
 template <typename Val>
 struct KVServerHandle
 {
