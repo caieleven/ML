@@ -3,6 +3,7 @@
 #include "Configure.h"
 #include "Model.h"
 #include "Sample.h"
+#include "ps/ps.h"
 
 class LogisticRegression
 {

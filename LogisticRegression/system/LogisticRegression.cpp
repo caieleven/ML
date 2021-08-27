@@ -22,6 +22,7 @@ void LogisticRegression::saveModel()
 
 void LogisticRegression::predict()
 {
-    _model.predict(_config);
+    if(ps::MyRank() == 0)
+        _model.predict(_config);
 }
 
