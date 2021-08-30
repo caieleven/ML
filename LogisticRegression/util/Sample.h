@@ -4,6 +4,8 @@
 #include <fstream>
 #include <vector>
 #include <iostream>
+#include <stdlib.h>
+#include <sstream>
 using namespace std;
 
 
@@ -36,10 +38,10 @@ public:
 
     /*
      * @brief constructor
-     * @param rowNum the number of data
+     * @param rowNum the number of data,if equals -1, means all data
      * @param colNum equals feature_num - 1
      */
-    Sample(const char* dataPath = NULL, int rowNum = 0, int colNum = 0, int batchsize = 10);
+    Sample(const char* dataPath = NULL, int rowNum = -1, int colNum = 0, int batchsize = 10);
 
 
     

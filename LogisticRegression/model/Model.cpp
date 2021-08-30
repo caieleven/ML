@@ -106,7 +106,7 @@ void Model::predict(Configure& config)
         keys[i] = i;
     _kv->Wait(_kv->Pull(keys, &weight));
 
-    int testSize = 10;
+    int testSize = -1; // means all test data
     int testBatchSize = 10;
     float acc = 0;
     Sample testData(config._test_file.c_str(), testSize, config._feature_num, testBatchSize);
