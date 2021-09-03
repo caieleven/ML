@@ -1,6 +1,7 @@
 #include "LogisticRegression.h"
 #include "ps/ps.h"
 using namespace std;
+using namespace ps;
 
 
 /*
@@ -49,7 +50,7 @@ void startServer()
     if(!ps::IsServer())
         return;
     auto server = new ps::KVServer<float>(0);
-    server->set_request_handle(KVServerHandle())
+    server->set_request_handle(KVServerHandle<float>());
 }
 
 
@@ -62,6 +63,7 @@ int main(int argc, char *argv[])
         LogisticRegression lr(argv[1]);
         lr.train();
     }
+    Finalize();
 
     return 0;
 }
