@@ -63,3 +63,9 @@ int Sample::getFeatureNum()
 {
     return _samples[0].features.size();
 }
+
+
+int Sample::getSampleNum()
+{
+    return _samples.size();
+}

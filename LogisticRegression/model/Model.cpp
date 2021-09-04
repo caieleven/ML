@@ -109,7 +109,7 @@ void Model::predict(Configure& config)
     int testSize = -1; // means all test data
     int testBatchSize = 10;
     float acc = 0;
-    Sample testData(config._test_file.c_str(), testSize, config._feature_num, testBatchSize);
+    Sample testData(config._test_file.c_str(), -1, config._feature_num, testBatchSize);
     vector<float> hvalue(testData.getFeatureNum());
     vector<float> testResult(testSize);
     while(testData.loadNextMinibatchSample())

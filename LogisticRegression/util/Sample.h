@@ -51,6 +51,12 @@ public:
      */ 
     int getFeatureNum();
 
+
+    /*
+     *@return row num of sample
+     */
+    int getSampleNum();
+
     /*
      * @return if true, success
      */
