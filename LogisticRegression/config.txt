@@ -1,0 +1,8 @@
+784
+-1
+2
+20
+0.05
+newtrain.data
+newtest.data
+

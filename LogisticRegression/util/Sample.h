@@ -8,7 +8,6 @@
 #include <sstream>
 using namespace std;
 
-
 /*
  * @brief store one sample, the first feature = 1
  */
@@ -33,7 +32,7 @@ private:
 
 public:
     //used for training, can be accessed directly
-    vector<Data> batch_data;  
+    vector<Data> batch_data;
     int batch_size;
 
     /*
@@ -41,21 +40,23 @@ public:
      * @param rowNum the number of data,if equals -1, means all data
      * @param colNum equals feature_num - 1
      */
-    Sample(const char* dataPath = NULL, int rowNum = -1, int colNum = 0, int batchsize = 10);
-
-
-    
+    Sample(const char *dataPath = NULL, int rowNum = -1, int colNum = 0, int batchsize = 10);
 
     /*
      * @return feature num
-     */ 
-    int getFeatureNum();
-
+     */
+    inline int getFeatureNum()
+    {
+        return _samples[0].features.size();
+    }
 
     /*
      *@return row num of sample
      */
-    int getSampleNum();
+    inline int getSampleNum()
+    {
+        return _samples.size();
+    }
 
     /*
      * @return if true, success
@@ -67,11 +68,6 @@ public:
     //  * @return true:this epoch is end
     //  */
     // bool end();
-
 };
-
-
-
-
 
 #endif

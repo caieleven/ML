@@ -51,6 +51,7 @@ void startServer()
         return;
     auto server = new ps::KVServer<float>(0);
     server->set_request_handle(KVServerHandle<float>());
+    cout << "start server" << endl;
 }
 
 
@@ -60,8 +61,10 @@ int main(int argc, char *argv[])
     startServer();
     if(ps::IsWorker())
     {
+        cout << "start worker" << endl;
         LogisticRegression lr(argv[1]);
         lr.train();
+        lr.predict();
     }
     Finalize();
 

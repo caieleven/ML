@@ -13,6 +13,7 @@ void sigmoid(float& x)
 
 Model::Model()
 {
+    cout << "initial model" << endl;
     _kv = new ps::KVWorker<float>(0);
 }
 
@@ -32,8 +33,14 @@ void Model::train(Configure& config, Sample& sample)
     for(int i = 0; i < sample.getFeatureNum(); i++)
         keys[i] = i;
 
+    int cont = 0;
+
     while(sample.loadNextMinibatchSample())
     {
+        
+        cout << "start to train" << cont << "th batch" << endl;
+        cont++;
+
         _kv->Wait(_kv->Pull(keys, &weight));
         calculateLoss(weight, sample.batch_data, loss);
         calculateGradient(loss,sample.batch_data, gradient, config._alpha);
@@ -106,12 +113,12 @@ void Model::predict(Configure& config)
         keys[i] = i;
     _kv->Wait(_kv->Pull(keys, &weight));
 
-    int testSize = -1; // means all test data
+
     int testBatchSize = 10;
     float acc = 0;
     Sample testData(config._test_file.c_str(), -1, config._feature_num, testBatchSize);
     vector<float> hvalue(testData.getFeatureNum());
-    vector<float> testResult(testSize);
+    vector<float> testResult(testData.getSampleNum());
     while(testData.loadNextMinibatchSample())
     {
         calculateHypothesis(weight, testData.batch_data, hvalue);
@@ -123,12 +130,16 @@ void Model::predict(Configure& config)
                 if(testData.batch_data[i].label == 1)
                     acc += 1;
             }
-                
             else
+            {
                 testResult.push_back(0);
+                if(testData.batch_data[i].label == 0)
+                    acc += 1;
+            }    
         }
     }
-    acc /= testSize;
+    acc /= testData.getSampleNum();
+    cout << acc << endl;
 }
 
 
