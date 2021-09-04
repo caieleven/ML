@@ -49,10 +49,11 @@ Sample::Sample(const char *dataPath, int rowNum, int colNum, int batchsize) : ba
 
 bool Sample::loadNextMinibatchSample()
 {
+
     batch_data.clear();
     if (_progress + batch_size > _samples.size())
         return false;
-
+    cout << "load Sample [" <<  _progress << "," << _progress + batch_size << "]" << endl;
     auto i1 = _samples.begin() + _progress, i2 = _samples.begin() + _progress + batch_size;
     batch_data.assign(i1, i2);
     _progress += batch_size;
