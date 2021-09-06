@@ -1,0 +1,8 @@
+10
+-1
+2
+20
+0.05
+LinearRtrain.data
+newtest.data
+

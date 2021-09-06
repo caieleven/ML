@@ -58,7 +58,7 @@ void Model::calculateLoss(vector<float>& weight, vector<Data>& batchdata, vector
         {
             tempValue += weight[j] * batchdata[i].features[j];
         }
-        sigmoid(tempValue);
+        //sigmoid(tempValue);
         tempValue -= batchdata[i].label;
         loss.push_back(tempValue);
     }
