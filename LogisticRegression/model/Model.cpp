@@ -45,6 +45,8 @@ void Model::train(Configure& config, Sample& sample)
         calculateGradient(loss,sample.batch_data, gradient, config._alpha);
         _kv->Wait(_kv->Push(keys, gradient));
     }
+
+    cout << "train end" << endl;
 }
 
 void Model::calculateLoss(vector<float>& weight, vector<Data>& batchdata, vector<float>& loss)
@@ -81,6 +83,15 @@ void Model::calculateGradient(vector<float>& loss, vector<Data>& batchdata, vect
         meanLoss /= loss.size();
         gradient[i] = alpha * meanLoss;
     }
+
+    //use for debug
+    cout << "gradient:" << endl;
+    for(int i = 0; i < gradient.size(); ++i)
+    {
+        cout << gradient[i] << " ";
+    }
+    cout << "\n";
+    //end
 }
 
 
@@ -91,6 +102,8 @@ void Model::saveModel(Configure& config)
     for(int i = 0; i< keys.size(); i++)
         keys[i] = i;
     _kv->Wait(_kv->Pull(keys, &weight));
+
+    cout << "start to save model" << endl;
     ofstream output("Model.txt");
     if(output.is_open())
     {
@@ -100,6 +113,7 @@ void Model::saveModel(Configure& config)
         }
         output.close();
     }
+    cout << "save successfully" << endl;
 }
 
 
@@ -112,7 +126,7 @@ void Model::predict(Configure& config)
         keys[i] = i;
     _kv->Wait(_kv->Pull(keys, &weight));
 
-
+    
     int testBatchSize = 10;
     float acc = 0;
     Sample testData(config._test_file.c_str(), -1, config._feature_num, testBatchSize);

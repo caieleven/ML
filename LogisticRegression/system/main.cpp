@@ -10,7 +10,6 @@ using namespace ps;
  */
 
 
-
 template <typename Val>
 struct KVServerHandle
 {
@@ -54,7 +53,6 @@ void startServer()
     cout << "start server" << endl;
 }
 
-
 int main(int argc, char *argv[])
 {
     ps::Start();
@@ -64,7 +62,8 @@ int main(int argc, char *argv[])
         cout << "start worker" << endl;
         LogisticRegression lr(argv[1]);
         lr.train();
-        lr.predict();
+        //lr.predict();
+        lr.saveModel();
     }
     Finalize();
 
