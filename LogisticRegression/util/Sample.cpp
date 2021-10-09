@@ -9,9 +9,13 @@ namespace LR
         std::ifstream file;
         Data tempdata;
         tempdata.features.resize(colNum);
+        Log::Write(LogLevel::Debug, "start to read sample file:%s\n", dataPath);
 
         file.open(dataPath);
-
+        if(file)
+            Log::Write(LogLevel::Debug, "open sample file %s successfully\n", dataPath);
+        else
+            Log::Write(LogLevel::Debug, "open faild\n");
         if (rowNum != -1)
         {
             float tempfeature;
@@ -19,7 +23,7 @@ namespace LR
             {
                 if (file.eof())
                 {
-                    std::cout << "the row number of the file is error" << std::endl;
+                    Log::Write(LogLevel::Fatal, "the row number of the file is essor\n");
                     break;
                 }
                 file >> tempdata.label;
@@ -49,6 +53,7 @@ namespace LR
         }
 
         file.close();
+        Log::Write(LogLevel::Debug, "read sample file %s successfully\n", dataPath);
     }
 
     bool Sample::loadNextMinibatchSample()
@@ -57,7 +62,7 @@ namespace LR
         batch_data.clear();
         if (_progress + batch_size > _samples.size())
             return false;
-        std::cout << "load Sample [" << _progress << "," << _progress + batch_size << "]" << std::endl;
+        Log::Write(LogLevel::Debug, "load sample [ %lld, %lld ]\n", _progress, _progress + batch_size);
         auto i1 = _samples.begin() + _progress, i2 = _samples.begin() + _progress + batch_size;
         batch_data.assign(i1, i2);
         _progress += batch_size;

@@ -4,6 +4,7 @@
 #include "Model.h"
 #include "Sample.h"
 #include "ps/ps.h"
+#include "log.h"
 namespace LR
 {
     class LogisticRegression

@@ -4,7 +4,7 @@
 #include <string>
 #include <fstream>
 #include <iostream>
-
+#include "log.h"
 namespace LR
 {
     struct Configure

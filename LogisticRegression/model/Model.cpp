@@ -13,7 +13,7 @@ namespace LR
 
     Model::Model()
     {
-        std::cout << "initial model" << std::endl;
+        Log::Write(LogLevel::Debug, "initial model\n");
         _kv = new ps::KVWorker<float>(0);
     }
 
@@ -36,8 +36,8 @@ namespace LR
 
         while (sample.loadNextMinibatchSample())
         {
-
-            std::cout << "start to train" << cont << "th batch" << std::endl;
+            Log::Write(LogLevel::Debug, "start to train %d th batch\n");
+            //std::cout << "start to train" << cont << "th batch" << std::endl;
             cont++;
 
             _kv->Wait(_kv->Pull(keys, &weight));
@@ -45,8 +45,8 @@ namespace LR
             calculateGradient(loss, sample.batch_data, gradient, config._alpha);
             _kv->Wait(_kv->Push(keys, gradient));
         }
-
-        std::cout << "train end" << std::endl;
+        Log::Write(LogLevel::Debug, "train end\n");
+        //std::cout << "train end" << std::endl;
     }
 
     void Model::calculateLoss(std::vector<float> &weight, std::vector<Data> &batchdata, std::vector<float> &loss)
@@ -101,7 +101,7 @@ namespace LR
             keys[i] = i;
         _kv->Wait(_kv->Pull(keys, &weight));
 
-        std::cout << "start to save model" << std::endl;
+        Log::Write(LogLevel::Debug, "start to save model\n");
         std::ofstream output("Model.txt");
         if (output.is_open())
         {
@@ -111,7 +111,7 @@ namespace LR
             }
             output.close();
         }
-        std::cout << "save successfully" << std::endl;
+        Log::Write(LogLevel::Debug, "save successfully\n");
     }
 
     void Model::predict(Configure &config)

@@ -6,7 +6,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include <sstream>
-
+#include "log.h"
 namespace LR
 {
     /*

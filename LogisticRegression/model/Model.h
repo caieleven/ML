@@ -6,7 +6,7 @@
 #include "Configure.h"
 #include <cmath>
 #include "ps/ps.h"
-
+#include "log.h"
 namespace LR
 {
     void sigmoid(float &x);
