@@ -60,7 +60,7 @@ int main(int argc, char *argv[])
     if(ps::IsWorker())
     {
         cout << "start worker" << endl;
-        LogisticRegression lr(argv[1]);
+        LR::LogisticRegression lr(argv[1]);
         lr.train();
         //lr.predict();
         lr.saveModel();

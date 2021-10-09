@@ -39,7 +39,7 @@ namespace LR
         //    bool is_kill_fatal_;
         Logger(const Logger &);
         void operator=(const Logger &);
-    }
+    };
 
     class Log
     {
@@ -52,7 +52,7 @@ namespace LR
         static void Fatal(const char *format, ...);
     private:
         static Logger logger_;
-    }
+    };
 
 }
 

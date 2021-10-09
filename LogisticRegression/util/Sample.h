@@ -6,68 +6,70 @@
 #include <iostream>
 #include <stdlib.h>
 #include <sstream>
-using namespace std;
 
-/*
+namespace LR
+{
+    /*
  * @brief store one sample, the first feature = 1
  */
-struct Data
-{
-    int label;
-    vector<float> features;
-};
+    struct Data
+    {
+        int label;
+        std::vector<float> features;
+    };
 
-/*
+    /*
  *@brief to load the training data
  */
 
-class Sample
-{
-private:
-    // all fo the training data
-    vector<Data> _samples;
+    class Sample
+    {
+    private:
+        // all fo the training data
+        std::vector<Data> _samples;
 
-    // indicate how much data has been used
-    long long int _progress = 0;
+        // indicate how much data has been used
+        long long int _progress = 0;
 
-public:
-    //used for training, can be accessed directly
-    vector<Data> batch_data;
-    int batch_size;
+    public:
+        //used for training, can be accessed directly
+        std::vector<Data> batch_data;
+        int batch_size;
 
-    /*
+        /*
      * @brief constructor
      * @param rowNum the number of data,if equals -1, means all data
      * @param colNum equals feature_num - 1
      */
-    Sample(const char *dataPath = NULL, int rowNum = -1, int colNum = 0, int batchsize = 10);
+        Sample(const char *dataPath = NULL, int rowNum = -1, int colNum = 0, int batchsize = 10);
 
-    /*
+        /*
      * @return feature num
      */
-    inline int getFeatureNum()
-    {
-        return _samples[0].features.size();
-    }
+        inline int getFeatureNum()
+        {
+            return _samples[0].features.size();
+        }
 
-    /*
+        /*
      *@return row num of sample
      */
-    inline int getSampleNum()
-    {
-        return _samples.size();
-    }
+        inline int getSampleNum()
+        {
+            return _samples.size();
+        }
 
-    /*
+        /*
      * @return if true, success
      */
-    bool loadNextMinibatchSample();
+        bool loadNextMinibatchSample();
 
-    // /*
-    //  * @brief indicate if all the data has been used
-    //  * @return true:this epoch is end
-    //  */
-    // bool end();
-};
+        // /*
+        //  * @brief indicate if all the data has been used
+        //  * @return true:this epoch is end
+        //  */
+        // bool end();
+    };
 
+}
 #endif
