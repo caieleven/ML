@@ -36,11 +36,12 @@ namespace LR
 
         while (sample.loadNextMinibatchSample())
         {
-            Log::Write(LogLevel::Debug, "start to train %d th batch\n");
+            Log::Write(LogLevel::Debug, "start to train %d th batch\n", cont);
             //std::cout << "start to train" << cont << "th batch" << std::endl;
             cont++;
 
             _kv->Wait(_kv->Pull(keys, &weight));
+            Log::Write(LogLevel::Debug, "the 2nd weight is %f\n", weight[1]);
             calculateLoss(weight, sample.batch_data, loss);
             calculateGradient(loss, sample.batch_data, gradient, config._alpha);
             _kv->Wait(_kv->Push(keys, gradient));
@@ -69,9 +70,10 @@ namespace LR
     void Model::calculateGradient(std::vector<float> &loss, std::vector<Data> &batchdata, std::vector<float> &gradient, const float &alpha)
     {
         float meanLoss = 0;
-        for (int i = 0; i < loss.size(); i++)
-            meanLoss += loss[i];
-        meanLoss /= loss.size();
+        // for (int i = 0; i < loss.size(); i++)
+        //     meanLoss += loss[i];
+        // meanLoss /= loss.size();
+        Log::Write(LogLevel::Debug, "loss.size()=%d\n", loss.size());
         for (int i = 0; i < gradient.size(); i++)
         {
             meanLoss = 0;
@@ -83,13 +85,13 @@ namespace LR
             gradient[i] = alpha * meanLoss;
         }
 
-        //use for debug
-        std::cout << "gradient:" << std::endl;
-        for (int i = 0; i < gradient.size(); ++i)
-        {
-            std::cout << gradient[i] << " ";
-        }
-        std::cout << "\n";
+        // //use for debug
+        // std::cout << "gradient:" << std::endl;
+        // for (int i = 0; i < gradient.size(); ++i)
+        // {
+        //     std::cout << gradient[i] << " ";
+        // }
+        // std::cout << "\n";
         //end
     }
 

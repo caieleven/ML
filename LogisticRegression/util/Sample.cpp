@@ -38,9 +38,12 @@ namespace LR
         }
         else
         {
+            //Bug::for some reasons, after reading 842 lines, the program stops running, but doesn't exit.
+            int cnt = 0;
             std::string line, tempstr;
             while (getline(file, line))
             {
+                Log::Write(LogLevel::Debug, "read %d line\n", ++cnt);
                 std::istringstream record(line);
                 record >> tempstr;
                 tempdata.label = atoi(tempstr.c_str());
