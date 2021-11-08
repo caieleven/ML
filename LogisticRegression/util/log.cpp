@@ -94,4 +94,12 @@ namespace LR
         va_end(val);
     }
 
+
+    void Log::Debug(const char *format, ...)
+    {
+        va_list val;
+        va_start(val, format);
+        logger_.WriteImpl(LogLevel::Debug, format, &val);
+        va_end(val);
+    }
 }

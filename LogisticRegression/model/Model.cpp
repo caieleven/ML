@@ -1,175 +1,171 @@
 #include "Model.h"
 
-/*
+namespace LR
+{
+    /*
  * @brief change x directly
  */
-void sigmoid(float& x)
-{
-    double ex = pow(2.718281828, x);
-    x = ex / (1.0 + ex);
-}
-
-
-Model::Model()
-{
-    cout << "initial model" << endl;
-    _kv = new ps::KVWorker<float>(0);
-}
-
-
-Model::~Model()
-{
-    delete _kv;
-}
-
-void Model::train(Configure& config, Sample& sample)
-{
-    //Sample sample(config._train_file, config._input_size, config._feature_num, config._minibatch_size);
-    vector<ps::Key> keys(sample.getFeatureNum());
-    vector<float> weight(sample.getFeatureNum());
-    vector<float> gradient(sample.getFeatureNum());
-    vector<float> loss(config._minibatch_size);
-    for(int i = 0; i < sample.getFeatureNum(); i++)
-        keys[i] = i;
-
-    int cont = 0;
-
-    while(sample.loadNextMinibatchSample())
+    void sigmoid(float &x)
     {
-        
-        cout << "start to train" << cont << "th batch" << endl;
-        cont++;
-
-        _kv->Wait(_kv->Pull(keys, &weight));
-        calculateLoss(weight, sample.batch_data, loss);
-        calculateGradient(loss,sample.batch_data, gradient, config._alpha);
-        _kv->Wait(_kv->Push(keys, gradient));
+        double ex = pow(2.718281828, x);
+        x = ex / (1.0 + ex);
     }
 
-    cout << "train end" << endl;
-}
-
-void Model::calculateLoss(vector<float>& weight, vector<Data>& batchdata, vector<float>& loss)
-{
-    float tempValue;
-    loss.clear();
-    for(int i = 0; i < batchdata.size(); i++)
+    Model::Model()
     {
-        tempValue = 0;
-        for(int j = 0; j < weight.size(); j++)
+        Log::Write(LogLevel::Debug, "initial model\n");
+        _kv = new ps::KVWorker<float>(0);
+    }
+
+    Model::~Model()
+    {
+        delete _kv;
+    }
+
+    void Model::train(Configure &config, Sample &sample)
+    {
+        //Sample sample(config._train_file, config._input_size, config._feature_num, config._minibatch_size);
+        std::vector<ps::Key> keys(sample.getFeatureNum());
+        std::vector<float> weight(sample.getFeatureNum());
+        std::vector<float> gradient(sample.getFeatureNum());
+        std::vector<float> loss(config._minibatch_size);
+        for (int i = 0; i < sample.getFeatureNum(); i++)
+            keys[i] = i;
+
+        int cont = 0;
+
+        while (sample.loadNextMinibatchSample())
         {
-            tempValue += weight[j] * batchdata[i].features[j];
+            Log::Write(LogLevel::Debug, "start to train %d th batch\n", cont);
+            //std::cout << "start to train" << cont << "th batch" << std::endl;
+            cont++;
+
+            _kv->Wait(_kv->Pull(keys, &weight));
+            Log::Write(LogLevel::Debug, "the 2nd weight is %f\n", weight[1]);
+            calculateLoss(weight, sample.batch_data, loss);
+            calculateGradient(loss, sample.batch_data, gradient, config._alpha);
+            _kv->Wait(_kv->Push(keys, gradient));
         }
-        sigmoid(tempValue);
-        tempValue -= batchdata[i].label;
-        loss.push_back(tempValue);
+        Log::Write(LogLevel::Debug, "train end\n");
+        //std::cout << "train end" << std::endl;
     }
-}
 
-
-void Model::calculateGradient(vector<float>& loss, vector<Data>& batchdata, vector<float>& gradient, const float& alpha)
-{
-    float meanLoss = 0;
-    for(int i = 0; i < loss.size(); i++)
-        meanLoss += loss[i];
-    meanLoss /= loss.size();
-    for(int i = 0; i < gradient.size(); i++)
+    void Model::calculateLoss(std::vector<float> &weight, std::vector<Data> &batchdata, std::vector<float> &loss)
     {
-        meanLoss = 0;
-        for(int j = 0; j < loss.size(); j++)
+        float tempValue;
+        loss.clear();
+        for (int i = 0; i < batchdata.size(); i++)
         {
-            meanLoss += loss[j] * batchdata[j].features[i];
-        }
-        meanLoss /= loss.size();
-        gradient[i] = alpha * meanLoss;
-    }
-
-    //use for debug
-    cout << "gradient:" << endl;
-    for(int i = 0; i < gradient.size(); ++i)
-    {
-        cout << gradient[i] << " ";
-    }
-    cout << "\n";
-    //end
-}
-
-
-void Model::saveModel(Configure& config)
-{
-    vector<ps::Key> keys(config._feature_num + 1);
-    vector<float> weight(config._feature_num + 1);
-    for(int i = 0; i< keys.size(); i++)
-        keys[i] = i;
-    _kv->Wait(_kv->Pull(keys, &weight));
-
-    cout << "start to save model" << endl;
-    ofstream output("Model.txt");
-    if(output.is_open())
-    {
-        for(int i = 0; i < weight.size(); i++)
-        {
-            output << weight[i] << "\t";
-        }
-        output.close();
-    }
-    cout << "save successfully" << endl;
-}
-
-
-
-void Model::predict(Configure& config)
-{
-    vector<ps::Key> keys(config._feature_num + 1);
-    vector<float> weight(config._feature_num + 1);
-    for(int i = 0; i< keys.size(); i++)
-        keys[i] = i;
-    _kv->Wait(_kv->Pull(keys, &weight));
-
-    
-    int testBatchSize = 10;
-    float acc = 0;
-    Sample testData(config._test_file.c_str(), -1, config._feature_num, testBatchSize);
-    vector<float> hvalue(testData.getFeatureNum());
-    vector<float> testResult(testData.getSampleNum());
-    while(testData.loadNextMinibatchSample())
-    {
-        calculateHypothesis(weight, testData.batch_data, hvalue);
-        for(int i = 0; i < hvalue.size(); i++)
-        {
-            if(hvalue[i] >= 0.5)
+            tempValue = 0;
+            for (int j = 0; j < weight.size(); j++)
             {
-                testResult.push_back(1);
-                if(testData.batch_data[i].label == 1)
-                    acc += 1;
+                tempValue += weight[j] * batchdata[i].features[j];
             }
-            else
-            {
-                testResult.push_back(0);
-                if(testData.batch_data[i].label == 0)
-                    acc += 1;
-            }    
+            sigmoid(tempValue);
+            tempValue -= batchdata[i].label;
+            loss.push_back(tempValue);
         }
     }
-    acc /= testData.getSampleNum();
-    cout << acc << endl;
-}
 
-
-
-void Model::calculateHypothesis(vector<float>& weight, vector<Data>& batchdata, vector<float>& hvalue)
-{
-    hvalue.clear();
-    float tempv = 0;
-    for(int i = 0; i < batchdata.size(); i++)
+    void Model::calculateGradient(std::vector<float> &loss, std::vector<Data> &batchdata, std::vector<float> &gradient, const float &alpha)
     {
-        tempv = 0;
-        for(int j = 0; j < weight.size(); j++)
+        float meanLoss = 0;
+        // for (int i = 0; i < loss.size(); i++)
+        //     meanLoss += loss[i];
+        // meanLoss /= loss.size();
+        Log::Write(LogLevel::Debug, "loss.size()=%d\n", loss.size());
+        for (int i = 0; i < gradient.size(); i++)
         {
-            tempv += weight[j] * batchdata[i].features[j];
+            meanLoss = 0;
+            for (int j = 0; j < loss.size(); j++)
+            {
+                meanLoss += loss[j] * batchdata[j].features[i];
+            }
+            meanLoss /= loss.size();
+            gradient[i] = alpha * meanLoss;
         }
-        sigmoid(tempv);
-        hvalue.push_back(tempv);
+
+        // //use for debug
+        // std::cout << "gradient:" << std::endl;
+        // for (int i = 0; i < gradient.size(); ++i)
+        // {
+        //     std::cout << gradient[i] << " ";
+        // }
+        // std::cout << "\n";
+        //end
+    }
+
+    void Model::saveModel(Configure &config)
+    {
+        std::vector<ps::Key> keys(config._feature_num + 1);
+        std::vector<float> weight(config._feature_num + 1);
+        for (int i = 0; i < keys.size(); i++)
+            keys[i] = i;
+        _kv->Wait(_kv->Pull(keys, &weight));
+
+        Log::Write(LogLevel::Debug, "start to save model\n");
+        std::ofstream output("Model.txt");
+        if (output.is_open())
+        {
+            for (int i = 0; i < weight.size(); i++)
+            {
+                output << weight[i] << "\t";
+            }
+            output.close();
+        }
+        Log::Write(LogLevel::Debug, "save successfully\n");
+    }
+
+    void Model::predict(Configure &config)
+    {
+        std::vector<ps::Key> keys(config._feature_num + 1);
+        std::vector<float> weight(config._feature_num + 1);
+        for (int i = 0; i < keys.size(); i++)
+            keys[i] = i;
+        _kv->Wait(_kv->Pull(keys, &weight));
+
+        int testBatchSize = 10;
+        float acc = 0;
+        Sample testData(config._test_file.c_str(), -1, config._feature_num, testBatchSize);
+        std::vector<float> hvalue(testData.getFeatureNum());
+        std::vector<float> testResult(testData.getSampleNum());
+        while (testData.loadNextMinibatchSample())
+        {
+            calculateHypothesis(weight, testData.batch_data, hvalue);
+            for (int i = 0; i < hvalue.size(); i++)
+            {
+                if (hvalue[i] >= 0.5)
+                {
+                    testResult.push_back(1);
+                    if (testData.batch_data[i].label == 1)
+                        acc += 1;
+                }
+                else
+                {
+                    testResult.push_back(0);
+                    if (testData.batch_data[i].label == 0)
+                        acc += 1;
+                }
+            }
+        }
+        acc /= testData.getSampleNum();
+        std::cout << acc << std::endl;
+    }
+
+    void Model::calculateHypothesis(std::vector<float> &weight, std::vector<Data> &batchdata, std::vector<float> &hvalue)
+    {
+        hvalue.clear();
+        float tempv = 0;
+        for (int i = 0; i < batchdata.size(); i++)
+        {
+            tempv = 0;
+            for (int j = 0; j < weight.size(); j++)
+            {
+                tempv += weight[j] * batchdata[i].features[j];
+            }
+            sigmoid(tempv);
+            hvalue.push_back(tempv);
+        }
     }
 
 }

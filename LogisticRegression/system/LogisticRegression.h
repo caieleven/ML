@@ -4,29 +4,28 @@
 #include "Model.h"
 #include "Sample.h"
 #include "ps/ps.h"
-
-class LogisticRegression
+#include "log.h"
+namespace LR
 {
-public:
-
-    /*
+    class LogisticRegression
+    {
+    public:
+        /*
      * @param config_file the file path of configure file
      */
-    LogisticRegression(char *config_file);
+        LogisticRegression(char *config_file);
 
-    void train();
-    void saveModel();
-    //void loadModel();
+        void train();
+        void saveModel();
+        //void loadModel();
 
+        void predict();
 
-    void predict();
+    private:
+        Configure _config;
+        Model _model;
+    };
 
-private:
-    Configure _config;
-    Model _model;
-};
-
-
-
+}
 
 #endif

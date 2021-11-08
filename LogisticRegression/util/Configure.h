@@ -4,24 +4,23 @@
 #include <string>
 #include <fstream>
 #include <iostream>
-using namespace std;
-
-
-struct Configure
+#include "log.h"
+namespace LR
 {
-	Configure(char* config_file);
-    Configure();
+    struct Configure
+    {
+        Configure(char *config_file);
+        Configure();
 
-    int _feature_num;
-    int _input_size;
-    //int _output_size;
-    int _train_epoch;
-	int _minibatch_size;
-    float _alpha;
-	string _train_file;
-	string _test_file;
-    
+        int _feature_num;
+        int _input_size;
+        //int _output_size;
+        int _train_epoch;
+        int _minibatch_size;
+        float _alpha;
+        std::string _train_file;
+        std::string _test_file;
+    };
+}
 
-};
-
-#endif 
+#endif
