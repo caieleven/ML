@@ -11,5 +11,4 @@ namespace LR
 		config.close();
 		Log::Write(LogLevel::Debug, "configure file read end\n");
 	}
-
 }

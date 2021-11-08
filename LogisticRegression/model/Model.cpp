@@ -42,6 +42,7 @@ namespace LR
 
             _kv->Wait(_kv->Pull(keys, &weight));
             Log::Write(LogLevel::Debug, "the 2nd weight is %f\n", weight[1]);
+            Log::Debug("the 2nd feature is: %f\n", sample.batch_data[0].features[1]);
             calculateLoss(weight, sample.batch_data, loss);
             calculateGradient(loss, sample.batch_data, gradient, config._alpha);
             _kv->Wait(_kv->Push(keys, gradient));

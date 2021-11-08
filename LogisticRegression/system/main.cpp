@@ -27,7 +27,7 @@ struct KVServerHandle
         {
             res.keys = req_data.keys;
             res.vals.resize(n);
-            Log::Write(LogLevel::Debug, "pull gradient[1]:%f\n", store[1]);
+            Log::Write(LogLevel::Debug, "pull weight[1]:%f\n", store[1]);
         }
         for (size_t i = 0; i < n; ++i)
         {
@@ -41,6 +41,8 @@ struct KVServerHandle
                 res.vals[i] = store[key];
             }
         }
+        if(req_meta.push)
+            Log::Debug("After push, the weight[1]:%f\n", store[1]);
         server->Response(req_meta, res);
     }
     std::unordered_map<Key, Val> store;
