@@ -1,0 +1,8 @@
+13
+250
+2
+20
+0.05
+/home/caieleven/ML/DataSet/hd.txt
+newtest.data
+
