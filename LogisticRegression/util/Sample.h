@@ -15,12 +15,13 @@ namespace LR
     struct Data
     {
         int label;
+        //std::vector<size_t> keys;
         std::vector<float> features;
     };
 
     /*
- *@brief to load the training data
- */
+     *@brief to load the training data
+     */
 
     class Sample
     {

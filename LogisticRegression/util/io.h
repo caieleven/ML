@@ -1,3 +1,6 @@
+#ifndef UTIL_IO_H
+#define UTIL_IO_H
+
 #include <cstdio>
 #include <string>
 #include "log.h"
@@ -59,3 +62,5 @@ private:
 
 
 }
+
+#endif
