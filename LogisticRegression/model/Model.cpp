@@ -42,7 +42,10 @@ namespace LR
 
             _kv->Wait(_kv->Pull(keys, &weight));
             Log::Write(LogLevel::Debug, "the 2nd weight is %f\n", weight[1]);
-            Log::Debug("the 2nd feature is: %f\n", sample.batch_data[0].features[1]);
+            Log::Debug("the 1st line for train:");
+            for(int i = 0; i < sample.batch_data[0].features.size(); ++i)
+                printf("%f ", sample.batch_data[0].features[i]);
+            printf("\n");
             calculateLoss(weight, sample.batch_data, loss);
             calculateGradient(loss, sample.batch_data, gradient, config._alpha);
             _kv->Wait(_kv->Push(keys, gradient));
@@ -55,6 +58,7 @@ namespace LR
     {
         float tempValue;
         loss.clear();
+        Log::Debug("the loss is:\n");
         for (int i = 0; i < batchdata.size(); i++)
         {
             tempValue = 0;
@@ -63,9 +67,13 @@ namespace LR
                 tempValue += weight[j] * batchdata[i].features[j];
             }
             sigmoid(tempValue);
+            printf("tempValue=%f\t", tempValue);
             tempValue -= batchdata[i].label;
+            printf("after sub the tempValue=%f\t", tempValue);
             loss.push_back(tempValue);
+            printf("Loss[%d] = %f\n",i, tempValue);
         }
+        Log::Debug("the loss end!\n");
     }
 
     void Model::calculateGradient(std::vector<float> &loss, std::vector<Data> &batchdata, std::vector<float> &gradient, const float &alpha)
@@ -75,6 +83,7 @@ namespace LR
         //     meanLoss += loss[i];
         // meanLoss /= loss.size();
         Log::Write(LogLevel::Debug, "loss.size()=%d\n", loss.size());
+        Log::Debug("the gradient is :\n");
         for (int i = 0; i < gradient.size(); i++)
         {
             meanLoss = 0;
@@ -84,7 +93,9 @@ namespace LR
             }
             meanLoss /= loss.size();
             gradient[i] = alpha * meanLoss;
+            printf("%f ", gradient[i]);
         }
+        Log::Debug("the gradient end!\n");
 
         // //use for debug
         // std::cout << "gradient:" << std::endl;

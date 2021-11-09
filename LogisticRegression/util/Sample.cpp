@@ -8,7 +8,7 @@ namespace LR
 
         std::ifstream file;
         Data tempdata;
-        tempdata.features.resize(colNum);
+        //tempdata.features.resize(colNum);
         Log::Write(LogLevel::Debug, "start to read sample file:%s\n", dataPath);
 
         file.open(dataPath);
@@ -34,7 +34,10 @@ namespace LR
                     tempdata.features.push_back(tempfeature);
                 }
                 _samples.push_back(tempdata);
+                //Log::Debug("%d\n", tempdata.features.size());
+                tempdata.features.clear();
             }
+            
         }
         else
         {
@@ -63,11 +66,22 @@ namespace LR
     {
 
         batch_data.clear();
+        batch_data.resize(batch_size);
         if (_progress + batch_size > _samples.size())
             return false;
         Log::Write(LogLevel::Debug, "load sample [ %lld, %lld ]\n", _progress, _progress + batch_size);
-        auto i1 = _samples.begin() + _progress, i2 = _samples.begin() + _progress + batch_size;
+        //auto i1 = _samples.begin() + _progress, i2 = _samples.begin() + _progress + batch_size;
+        //auto i1 = _samples.begin(), i2 = _samples.begin();
+        auto i1 = _samples.begin(), i2 = _samples.begin();
+        for(int i = 0; i < _progress; ++i)
+            i1++;
+        for(int j = 0; j < _progress + batch_size; ++j)
+            i2++;
         batch_data.assign(i1, i2);
+        Log::Debug("the 1st line:\n");
+        for(int i = 0; i < batch_data[0].features.size();++i)
+            printf("%f ", batch_data[0].features[i]);
+        Log::Debug("the 1st line end\n");
         _progress += batch_size;
         return true;
     }

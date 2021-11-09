@@ -17,7 +17,7 @@ public:
                 size_t row_size, 
                 int output_size,
                 int max_row_buffer_count, 
-                bool init = true,
+                bool init,
                 int update_per_sample);
     ~SampleReader();
     int Read(int num_row, Data **buffer);

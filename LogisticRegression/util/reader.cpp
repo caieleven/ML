@@ -23,9 +23,9 @@ SampleReader::SampleReader(const std::string& files,
                 sample_batch_size_(update_per_sample),
                 sample_count_(0)
 {
-    buffer_ = new Data*[row_size_];
-    for(int i = 0; i < num; ++i)
-        buffer_[i] = new Data
+    // buffer_ = new Data*[row_size_];
+    // for(int i = 0; i < num; ++i)
+    //     buffer_[i] = new Data
 }
 
 
