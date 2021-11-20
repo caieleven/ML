@@ -5,6 +5,7 @@
 #include "log.h"
 #include "Sample.h"
 #include "io.h"
+#include <sstream>
 
 
 namespace LR
@@ -17,7 +18,7 @@ public:
                 size_t row_size, 
                 int output_size,
                 int max_row_buffer_count, 
-                bool init = true,
+                //bool init = true,
                 int update_per_sample);
     ~SampleReader();
     int Read(int num_row, Data **buffer);
@@ -29,9 +30,12 @@ public:
     }
 private:
     void Main();
+    void ParseLine(const std::string& line, int idx);
+    
 
 
 private:
+    std::string files_;
     Data** buffer_;
     bool eof_;
     int start_;
@@ -44,8 +48,6 @@ private:
     size_t row_size_;
     size_t sample_batch_size_;
     size_t sample_count_;
-
-
 };
 
 
