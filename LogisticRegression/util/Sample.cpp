@@ -79,8 +79,8 @@ namespace LR
             i2++;
         batch_data.assign(i1, i2);
         Log::Debug("the 1st line:\n");
-        for(int i = 0; i < batch_data[0].features.size();++i)
-            printf("%f ", batch_data[0].features[i]);
+        // for(int i = 0; i < batch_data[0].features.size();++i)
+        //     printf("%f ", batch_data[0].features[i]);
         Log::Debug("the 1st line end\n");
         _progress += batch_size;
         return true;

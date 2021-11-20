@@ -1,8 +1,8 @@
 13
-200
-2
+260
 20
-0.05
-/home/caieleven/ML/DataSet/hd.txt
-newtest.data
+1
+0.0001
+/home/caieleven/ML/DataSet/heartd.txt
+/home/caieleven/ML/DataSet/heartd.txt
 

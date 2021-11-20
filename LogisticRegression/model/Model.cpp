@@ -7,8 +7,10 @@ namespace LR
  */
     void sigmoid(float &x)
     {
-        double ex = pow(2.718281828, x);
-        x = ex / (1.0 + ex);
+        //double ex = pow(2.718281828, x);
+        float ex = exp(x);
+        //x = ex / (1.0 + ex);
+        x = static_cast<float>(1.0f / (1.0f + exp(-x)));
     }
 
     Model::Model()
@@ -41,11 +43,15 @@ namespace LR
             cont++;
 
             _kv->Wait(_kv->Pull(keys, &weight));
-            Log::Write(LogLevel::Debug, "the 2nd weight is %f\n", weight[1]);
-            Log::Debug("the 1st line for train:");
-            for(int i = 0; i < sample.batch_data[0].features.size(); ++i)
-                printf("%f ", sample.batch_data[0].features[i]);
-            printf("\n");
+            //Log::Write(LogLevel::Debug, "the 2nd weight is %f\n", weight[1]);
+            // Log::Debug("the weight is:\n");
+            // for(int i = 0; i < weight.size(); ++i)
+            //     printf("%f ", weight[i]);
+            // Log::Debug("\nthe weight end\n");
+            // Log::Debug("the 1st line for train:");
+            // for(int i = 0; i < sample.batch_data[0].features.size(); ++i)
+            //     printf("%f ", sample.batch_data[0].features[i]);
+            // printf("\n");
             calculateLoss(weight, sample.batch_data, loss);
             calculateGradient(loss, sample.batch_data, gradient, config._alpha);
             _kv->Wait(_kv->Push(keys, gradient));
@@ -58,7 +64,8 @@ namespace LR
     {
         float tempValue;
         loss.clear();
-        Log::Debug("the loss is:\n");
+        //Log::Debug("the loss is:\n");
+        Log::Debug("the batchdata.size()=%d\n", batchdata.size());
         for (int i = 0; i < batchdata.size(); i++)
         {
             tempValue = 0;
@@ -66,10 +73,11 @@ namespace LR
             {
                 tempValue += weight[j] * batchdata[i].features[j];
             }
+            //printf("tempValue=%f\t", tempValue);
             sigmoid(tempValue);
-            printf("tempValue=%f\t", tempValue);
+            
             tempValue -= batchdata[i].label;
-            printf("after sub the tempValue=%f\t", tempValue);
+            //printf("after sub the tempValue=%f\t", tempValue);
             loss.push_back(tempValue);
             printf("Loss[%d] = %f\n",i, tempValue);
         }
@@ -83,7 +91,7 @@ namespace LR
         //     meanLoss += loss[i];
         // meanLoss /= loss.size();
         Log::Write(LogLevel::Debug, "loss.size()=%d\n", loss.size());
-        Log::Debug("the gradient is :\n");
+        //Log::Debug("the gradient is :\n");
         for (int i = 0; i < gradient.size(); i++)
         {
             meanLoss = 0;
@@ -93,9 +101,9 @@ namespace LR
             }
             meanLoss /= loss.size();
             gradient[i] = alpha * meanLoss;
-            printf("%f ", gradient[i]);
+            //printf("%f ", gradient[i]);
         }
-        Log::Debug("the gradient end!\n");
+        //Log::Debug("the gradient end!\n");
 
         // //use for debug
         // std::cout << "gradient:" << std::endl;
@@ -136,9 +144,9 @@ namespace LR
             keys[i] = i;
         _kv->Wait(_kv->Pull(keys, &weight));
 
-        int testBatchSize = 10;
-        float acc = 0;
-        Sample testData(config._test_file.c_str(), -1, config._feature_num, testBatchSize);
+        int testBatchSize = 1;
+        float acc = 35;
+        Sample testData(config._test_file.c_str(), 150, config._feature_num, testBatchSize);
         std::vector<float> hvalue(testData.getFeatureNum());
         std::vector<float> testResult(testData.getSampleNum());
         while (testData.loadNextMinibatchSample())
@@ -160,8 +168,10 @@ namespace LR
                 }
             }
         }
+
         acc /= testData.getSampleNum();
-        std::cout << acc << std::endl;
+        //std::cout << acc << std::endl;
+        Log::Info("The accurency = %f%%\n", acc*100);
     }
 
     void Model::calculateHypothesis(std::vector<float> &weight, std::vector<Data> &batchdata, std::vector<float> &hvalue)
