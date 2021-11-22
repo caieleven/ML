@@ -2,6 +2,9 @@
 #define LOG_H
 #include <fstream>
 #include <string>
+#include "time.h"
+#include <stdarg.h>
+#include <string>
 
 namespace LR
 {

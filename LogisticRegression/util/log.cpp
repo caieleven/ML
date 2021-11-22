@@ -1,7 +1,5 @@
 #include "log.h"
-#include "time.h"
-#include "stdarg.h"
-#include <string>
+
 
 namespace LR
 {

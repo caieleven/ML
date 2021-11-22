@@ -66,7 +66,7 @@ bool LocalStream::Good()
 
 TextReader::TextReader(const std::string &path, size_t buf_size)
 {
-    stream_ = LocalStream(path, FileOpenMode::Read);
+    stream_ = new LocalStream(path, FileOpenMode::Read);
     buf_size_ = buf_size;
     pos_ = length_ = 0;
     buf_ = new char[buf_size_];

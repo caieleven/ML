@@ -42,17 +42,18 @@ void SampleReader::Main()
 {
     reader_ = new TextReader(files_, 1024);
     std::string line;
-    Log::Debug("SampleReader start to read file %s", files_.c_str());
+    Log::Debug("SampleReader start to read file %s\n", files_.c_str());
     while(reader_->GetLine(line))
     {
         ParseLine(line, end_);
         ++length_;
+        ++end_;
         if(length_ >= buffer_size_)
             break;
-        ParseLine(line, end_);
-        end_++;   
+        
     }
-    Log::Debug("SampleReader end of file %s", files_.c_str());
+    Log::Debug("end=%d, length=%d\n", end_, length_);
+    Log::Debug("SampleReader end of file %s\n", files_.c_str());
 }
 
 
@@ -73,13 +74,14 @@ void SampleReader::ParseLine(const std::string& line, int idx)
 
 int SampleReader::Read(int num_row, Data **buffer)
 {
-    read_length_ += num_row;
-    int size = num_row;
+    int size = min<int>(length_-read_length_, num_row);
+    read_length_ += size;
     for(int i = 0; i < size; ++i)
     {
-        buffer[i] = buffer_[round(start_ + i, buffer_size_)];
+        //buffer[i] = buffer_[round(start_ + i, buffer_size_)];
+        buffer[i] = buffer_[round(start_ + i, length_)];
     }
-    start_ = round(start_ + size, buffer_size_);
+    start_ = round(start_ + size, length_);
     return size;
 }
 
