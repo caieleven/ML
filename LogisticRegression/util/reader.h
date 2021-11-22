@@ -22,8 +22,8 @@ public:
                 int update_per_sample);
     ~SampleReader();
     int Read(int num_row, Data **buffer);
-    void Free(int num_row);
-    int Ask();
+//    void Free(int num_row);
+//    int Ask();
     inline bool EndOfFile() const
     {
         return eof_;
