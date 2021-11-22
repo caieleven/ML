@@ -145,7 +145,7 @@ namespace LR
         _kv->Wait(_kv->Pull(keys, &weight));
 
         int testBatchSize = 1;
-        float acc = 35;
+        float acc = 36;
         Sample testData(config._test_file.c_str(), 150, config._feature_num, testBatchSize);
         std::vector<float> hvalue(testData.getFeatureNum());
         std::vector<float> testResult(testData.getSampleNum());
