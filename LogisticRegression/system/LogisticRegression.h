@@ -11,8 +11,8 @@ namespace LR
     {
     public:
         /*
-     * @param config_file the file path of configure file
-     */
+         * @param config_file the file path of configure file
+         */
         LogisticRegression(char *config_file);
 
         void train();

@@ -10,8 +10,8 @@
 namespace LR
 {
     /*
- * @brief store one sample, the first feature = 1
- */
+     * @brief store one sample, the first feature = 1
+     */
     struct Data
     {
         int label;
@@ -38,15 +38,15 @@ namespace LR
         int batch_size;
 
         /*
-     * @brief constructor
-     * @param rowNum the number of data,if equals -1, means all data
-     * @param colNum equals feature_num - 1
-     */
+         * @brief constructor
+         * @param rowNum the number of data,if equals -1, means all data
+         * @param colNum equals feature_num - 1
+         */
         Sample(const char *dataPath = NULL, int rowNum = -1, int colNum = 0, int batchsize = 10);
 
         /*
-     * @return feature num
-     */
+         * @return feature num
+         */
         inline int getFeatureNum()
         {
             return _samples[0].features.size();

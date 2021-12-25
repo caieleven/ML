@@ -8,10 +8,10 @@ aux_source_directory(system src_system)
 aux_source_directory(util src_util)
 
 link_directories(
-  # ${PROJECT_SOURCE_DIR}/ps-lite/deps/lib
-  # ${PROJECT_SOURCE_DIR}/ps-lite/build
-  /home/caieleven/temp/LogisticRegression/ps-lite/build
-  /home/caieleven/temp/LogisticRegression/ps-lite/deps/lib
+  ${PROJECT_SOURCE_DIR}/../ps-lite/deps/lib
+  ${PROJECT_SOURCE_DIR}/../ps-lite/build
+  # /home/caieleven/temp/LogisticRegression/ps-lite/build
+  # /home/caieleven/temp/LogisticRegression/ps-lite/deps/lib
 )
 
 find_package(Threads REQUIRED)
