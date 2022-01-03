@@ -1,9 +1,7 @@
 #ifndef IO_H
 #define IO_H
 #include "util/log.h"
-#include 
-
-
+#include <string>
 
 namespace LR
 {
@@ -11,7 +9,7 @@ namespace LR
     {
         Write = 0,
         Read = 1,
-        Append
+        Append = 2
     };
 
     class FileOperator
@@ -23,9 +21,11 @@ namespace LR
         void Write(const void *buf, size_t size);
         
         /*
+         * @param buf pointer to a memory buffer
+         * @param size data size
          * @return the true size of data
          */
-        size_t Read(void *buf, size_t sizse);
+        size_t Read(void *buf, size_t size);
 
         bool Good();
     
@@ -39,7 +39,7 @@ namespace LR
     class TextReader
     {
     public:
-        TextReader(const std::string &path, size_t buf_size);
+        TextReader(const std::string &path, size_t buf_size = 1024);
         ~TextReader();
         size_t GetLine(std::string &line);
     private:
