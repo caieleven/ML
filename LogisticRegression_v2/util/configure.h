@@ -2,7 +2,8 @@
 #define CONFIGURE_H
 
 #include <string>
-#include "util/log.h"
+#include <unordered_map>
+#include "log.h"
 
 namespace LR
 {
@@ -25,7 +26,7 @@ namespace LR
         int mini_batch_size = 20;
         int train_epoch = 1;
         float learning_rate = 0.5;
-        bool use_ps;
+        bool use_ps = false;
     private:
         void ValueMatch(std::unordered_map<std::string, std::string> &map, std::string datatype, std::string key, void *keyp);
     };

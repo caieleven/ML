@@ -3,7 +3,7 @@
 namespace LR
 {
 
-    FileOperator::FileOperator(const std::string &path, FileOpenMode mode)
+    FileOperator::FileOperator(const std::string &path, FileOpenMode mode):path_(path)
     {
         std::string mode_str;
         switch (mode)

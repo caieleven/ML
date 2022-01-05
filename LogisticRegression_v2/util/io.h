@@ -1,6 +1,6 @@
 #ifndef IO_H
 #define IO_H
-#include "util/log.h"
+#include "log.h"
 #include <string>
 
 namespace LR
