@@ -8,10 +8,10 @@ namespace LR
     struct Sample
     {
         int label;
-        std::vector<ElemType> features_;
-        Sample(size_t size)
+        std::vector<ElemType> features;
+        Sample(int size)
         {
-            features_.reserve(size);
+            features.reserve(size);
         }
     };
 
@@ -22,13 +22,21 @@ namespace LR
      * @return the pointer of buffer
      */
     template <typename ElemType>
-    Sample<ElemType> **CreateSampleBuff(int num, size_t size)
+    Sample<ElemType> **CreateSampleBuff(int num, int size)
     {
-        Sample<ElemType> samplep = new Sample<ElemType> *[num];
-        for (int i = 0; i < size; ++i)
+        Sample<ElemType>** samplep = new Sample<ElemType> *[num];
+        for (int i = 0; i < num; ++i)
         {
-            samplep[i] = new Sample(size)
+            samplep[i] = new Sample<ElemType>(size);
         }
+        return samplep;
+    }
+
+    template <typename ElemType>
+    void DeleteSampleBuff(Sample<ElemType>** samplep, int num)
+    {
+        for(int i = 0;i < num; i ++)
+            delete samplep[i];
     }
 
 }
