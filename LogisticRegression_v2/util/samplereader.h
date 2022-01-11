@@ -16,8 +16,16 @@ namespace LR
     class SampleReader
     {
     public:
+        /**
+         * @brief 构造函数
+         * @param filepath 需要读取的样本文件的文件路径
+         * @param read_buffer_size 存储在该实例的buffer_中的样本数量
+         * @param input_dimention 样本标签数，不包含最后与偏移量相对应的1
+         */
         SampleReader(std::string filepath, int read_buffer_size, int input_dimention);
+
         ~SampleReader();
+
         /**
          * @brief load data to the buffer, 
          * @param buffer_size the data size you want to load
@@ -25,12 +33,32 @@ namespace LR
          * @return the true rows actually load
          */
         int GetSample(int buffer_size, Sample<ElemType> **buffer);
+
+        /**
+         * @brief 释放一些资源，可以让读文件进程继续进行
+         * @param row_num 释放的sample个数
+         */
         void Free(int row_num);
+
+        /**
+         * @brief 重置，epoch>1时使用，重新开始读取文件，实例重复利用
+         */
         void Reset();
+
+        /**
+         * @brief 终止SampleReader，当模型趋于稳定时，不再需要训练时可以使用
+         */
         void Stop();
+
+        /**
+         * @brief 是否读取了文件中的所有data
+         */
         bool IsEndOfFile() const;
 
     private:
+        /**
+         * @brief 类的主要函数，另起一个线程执行该函数，利用stop终止该函数执行
+         */
         void Read();
         /**
          * @param str string where data stored
