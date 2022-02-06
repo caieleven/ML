@@ -4,5 +4,10 @@
 
 namespace LR
 {
-    
+    template <typename ElemType>
+    class Model
+    {
+        
+
+    };
 }

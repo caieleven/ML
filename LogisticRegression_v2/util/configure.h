@@ -14,8 +14,9 @@ namespace LR
 
         std::string train_file;
         std::string test_file;
-        std::string regular_type = "";
+        std::string regularizer = "";
         std::string objective_type = "sigmoid";
+        std::string optimizer = "mbgd";
         std::string output_file = "LR.output";
         std::string model_file = "LR.model";
 
@@ -26,6 +27,7 @@ namespace LR
         int mini_batch_size = 20;
         int train_epoch = 1;
         float learning_rate = 0.5;
+        float regular_coef = 0.005;
         bool use_ps = false;
     private:
         void ValueMatch(std::unordered_map<std::string, std::string> &map, std::string datatype, std::string key, void *keyp);

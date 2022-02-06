@@ -24,8 +24,9 @@ namespace LR
         }
         VALUEMATCH(train_file, "string");
         VALUEMATCH(test_file, "string");
-        VALUEMATCH(regular_type, "string");
+        VALUEMATCH(regularizer, "string");
         VALUEMATCH(objective_type, "string");
+        VALUEMATCH(optimizer, "string");
         VALUEMATCH(output_file, "string");
         VALUEMATCH(model_file, "string");
         VALUEMATCH(input_dimention, "int");
@@ -34,6 +35,7 @@ namespace LR
         VALUEMATCH(mini_batch_size, "int");
         VALUEMATCH(train_epoch, "int");
         VALUEMATCH(learning_rate, "float");
+        VALUEMATCH(regular_coef, "float");
         VALUEMATCH(use_ps, "bool");
 
     }
