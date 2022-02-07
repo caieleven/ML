@@ -10,7 +10,10 @@ namespace LR
     {
     public:
         Objective(Configure &config);
+        static Get(const Configure& config);
         virtual float Gradient(Sample<ElemType> sample, std::vector<float> model);
+
+        
 
     protected:
         bool Regularization_;
