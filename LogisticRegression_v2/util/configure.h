@@ -14,7 +14,7 @@ namespace LR
 
         std::string train_file;
         std::string test_file;
-        std::string regularizer = "";
+        std::string regularizer = "default";
         std::string objective_type = "sigmoid";
         std::string optimizer = "mbgd";
         std::string output_file = "LR.output";

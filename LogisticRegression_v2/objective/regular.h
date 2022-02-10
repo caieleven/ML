@@ -1,4 +1,5 @@
 #include "configure.h"
+#include <math.h>
 #include <vector>
 
 namespace LR
@@ -8,9 +9,9 @@ namespace LR
     {
     public:
         Regular(const Configure &config);
-        static Get(const Configure &config);
+        static Regular<ElemType> *Get(const Configure &config);
         virtual ~Regular() = default;
-        virtual ElemType AddTerm(size_t idx, std::vector<ElemType> *model);
+        inline virtual ElemType AddTerm(size_t idx, std::vector<ElemType> &model);
 
     private:
         float coef_;
@@ -24,7 +25,7 @@ namespace LR
     public:
         L1Regular(const Configure &config);
         virtual ~L1Regular() = default;
-        virtual ElemType AddTerm(size_t idx, std::vector<ElemType> *model);
+        inline virtual ElemType AddTerm(size_t idx, std::vector<ElemType> &model);
     };
 
     template <typename ElemType>
@@ -33,7 +34,7 @@ namespace LR
     public:
         L2Regular(const Configure &config);
         virtual ~L2Regular() = default;
-        virtual ElemType AddTerm(size_t idx, std::vector<ElemType> *model);
+        inline virtual ElemType AddTerm(size_t idx, std::vector<ElemType> &model);
     };
 
     template <typename ElemType>
@@ -44,14 +45,31 @@ namespace LR
     }
 
     template <typename ElemType>
+    Regular<ElemType> *Regular<ElemType>::Get(const Configure &config)
+    {
+        if (config.regularizer == "L1")
+            return new L1Regular<ElemType>(config);
+        else if (config.regularizer == "L2")
+            return new L2Regular<ElemType>(config);
+        else
+            return new Regular<ElemType>(config);
+    }
+
+    template <typename ElemType>
+    inline ElemType Regular<ElemType>::AddTerm(size_t idx, std::vector<ElemType> &model)
+    {
+        return 0;
+    }
+
+    template <typename ElemType>
     L1Regular<ElemType>::L1Regular(const Configure &config) : Regular<ElemType>(config)
     {
     }
 
     template <typename ElemType>
-    ElemType L1Regular<ElemType>::AddTerm(size_t idx, std::vector<ElemType> *model)
+    inline ElemType L1Regular<ElemType>::AddTerm(size_t idx, std::vector<ElemType> &model)
     {
-        return (ElemType)((*model)[idx] > 0 ? coef_ : -coef_);
+        return (ElemType)(model[idx] > 0 ? coef_ : -coef_);
     }
 
     template <typename ElemType>
@@ -60,10 +78,10 @@ namespace LR
     }
 
     template <typename ElemType>
-    ElemType L2Regular<ElemType>::AddTerm(size_t idx, std::vector<ElemType> *model)
+    inline ElemType L2Regular<ElemType>::AddTerm(size_t idx, std::vector<ElemType> &model)
     {
-        return (ElemType)(abs((*model)[idx]) * coef_);
+        return (ElemType)(abs(model[idx]) * coef_);
     }
-    //template <typename ElemType>
+    // template <typename ElemType>
 
 }
