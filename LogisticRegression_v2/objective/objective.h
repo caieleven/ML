@@ -20,7 +20,7 @@ namespace LR
          * @return 执行objective的指针
          */
         static Objective<ElemType> *Get(const Configure& config);
-        inline virtual float Gradient(Sample<ElemType> *sample, std::vector<ElemType> &model, std::vector<ElemType> &gradient);
+        inline virtual void Gradient(Sample<ElemType> *sample, std::vector<ElemType> &model, std::vector<ElemType> &gradient);
 
     protected:
         int input_dimention_;
@@ -34,7 +34,7 @@ namespace LR
     public:
         SigmoidObjective(const Configure &config);
         virtual ~Objective();
-        inline virtual float Gradient(Sample<ElemType> *sample, std::vector<ElemType> &model, std::vector<ElemType> &gradient);
+        inline virtual void Gradient(Sample<ElemType> *sample, std::vector<ElemType> &model, std::vector<ElemType> &gradient);
         inline float Sigmoid(Sample<ElemType>* sample, std::vector<ElemType>& model);
     };
 
@@ -44,7 +44,7 @@ namespace LR
     public:
         SoftmaxObjective(const Configure &config);
         virtual ~Objective();
-        inline virtual float Gradient(Sample<ElemType> *sample, std::vector<ElemType> &model, std::vector<ElemType> &gradient);
+        inline virtual void Gradient(Sample<ElemType> *sample, std::vector<ElemType> &model, std::vector<ElemType> &gradient);
     };
     
     
@@ -80,13 +80,20 @@ namespace LR
         delete regular_;
     }
 
+
+    template <typename ElemType>
+    inline void Objective<ElemType>::Gradient(Sample<ElemType> *sample, std::vector<ElemType> &model, std::vector<ElemType> &gradient)
+    {
+
+    }
+
     template <typename ElemType>
     SigmoidObjective<ElemType>::SigmoidObjective(const Configure& config):Objective<ElemType>(config)
     {
     }
 
     template <typename ElemType>
-    float SigmoidObjective<ElemType>::Gradient(Sample<ElemType> *sample, std::vector<ElemType> &model, std::vector<ElemType> &gradient)
+    inline void SigmoidObjective<ElemType>::Gradient(Sample<ElemType> *sample, std::vector<ElemType> &model, std::vector<ElemType> &gradient)
     {
         //计算损失函数值
         float hvalue = Sigmoid(sample, model);
@@ -111,7 +118,7 @@ namespace LR
     }
 
     template <typename ElemType>
-    float SoftmaxObjective<ElemType>::Gradient(Sample<ElemType> *sample, std::vector<ElemType> &model, std::vector<ElemType> &gradient)
+    inline void SoftmaxObjective<ElemType>::Gradient(Sample<ElemType> *sample, std::vector<ElemType> &model, std::vector<ElemType> &gradient)
     {
         //计算损失函数值
         float hvalue = Sigmoid(sample, model);
