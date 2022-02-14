@@ -10,10 +10,10 @@ namespace LR
     public:
         Regular(const Configure &config);
         static Regular<ElemType> *Get(const Configure &config);
-        virtual ~Regular() = default;
+        //virtual ~Regular();
         inline virtual ElemType AddTerm(size_t idx, std::vector<ElemType> &model);
 
-    private:
+    protected:
         float coef_;
         int input_dimention_;
         int output_dimention_;
@@ -69,7 +69,7 @@ namespace LR
     template <typename ElemType>
     inline ElemType L1Regular<ElemType>::AddTerm(size_t idx, std::vector<ElemType> &model)
     {
-        return (ElemType)(model[idx] > 0 ? coef_ : -coef_);
+        return (ElemType)(model[idx] > 0 ? this->coef_ : - this->coef_);
     }
 
     template <typename ElemType>
@@ -80,7 +80,7 @@ namespace LR
     template <typename ElemType>
     inline ElemType L2Regular<ElemType>::AddTerm(size_t idx, std::vector<ElemType> &model)
     {
-        return (ElemType)(abs(model[idx]) * coef_);
+        return (ElemType)(abs(model[idx]) * this->coef_);
     }
     // template <typename ElemType>
 

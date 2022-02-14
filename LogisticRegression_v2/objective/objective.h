@@ -33,7 +33,7 @@ namespace LR
     {
     public:
         SigmoidObjective(const Configure &config);
-        virtual ~Objective();
+        //virtual ~SigmoidObjective();
         inline virtual void Gradient(Sample<ElemType> *sample, std::vector<ElemType> &model, std::vector<ElemType> &gradient);
         inline float Sigmoid(Sample<ElemType>* sample, std::vector<ElemType>& model);
     };
@@ -43,7 +43,7 @@ namespace LR
     {
     public:
         SoftmaxObjective(const Configure &config);
-        virtual ~Objective();
+        //virtual ~SoftmaxObjective();
         inline virtual void Gradient(Sample<ElemType> *sample, std::vector<ElemType> &model, std::vector<ElemType> &gradient);
     };
     
@@ -100,9 +100,9 @@ namespace LR
         //计算误差
         hvalue -= sample->label;
         //添加正则化项
-        for(size_t i = 0; i < input_dimention_; ++i)
+        for(size_t i = 0; i < this->input_dimention_; ++i)
         {
-            gradient[i] += hvalue * (sample->label[i]) + regular_->AddTerm(i, model);
+            gradient[i] += hvalue * (sample->features[i]) + this->regular_->AddTerm(i, model);
         }
     }
 
@@ -120,15 +120,15 @@ namespace LR
     template <typename ElemType>
     inline void SoftmaxObjective<ElemType>::Gradient(Sample<ElemType> *sample, std::vector<ElemType> &model, std::vector<ElemType> &gradient)
     {
-        //计算损失函数值
-        float hvalue = Sigmoid(sample, model);
-        //计算误差
-        hvalue -= sample->label;
-        //添加正则化项
-        for(size_t i = 0; i < input_dimention_; ++i)
-        {
-            gradient[i] += hvalue * (sample->label[i]) + regular_->AddTerm(i, model);
-        }
+        // //计算损失函数值
+        // float hvalue = Sigmoid(sample, model);
+        // //计算误差
+        // hvalue -= sample->label;
+        // //添加正则化项
+        // for(size_t i = 0; i < input_dimention_; ++i)
+        // {
+        //     gradient[i] += hvalue * (sample->label[i]) + this->regular_->AddTerm(i, model);
+        // }
     }
 
 }
