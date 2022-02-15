@@ -1,6 +1,5 @@
 #ifndef SAMPLE_H
 #define SAMPLE_H
-#include "configure.h"
 #include <thread>
 #include <mutex>
 #include <condition_variable>

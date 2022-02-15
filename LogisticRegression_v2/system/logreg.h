@@ -8,7 +8,7 @@ namespace LR
     class LogReg
     {
     public:
-        LogReg(std::string config_file);
+        LogReg(const std::string config_file);
         void Train();
         void SaveModel();
         void Predict();
@@ -19,7 +19,7 @@ namespace LR
     };
 
     template <typename ElemType>
-    LogReg<ElemType>::LogReg(std::string config_file) : config_(config_file)
+    LogReg<ElemType>::LogReg(const std::string config_file) : config_(config_file)
     {
         model_ = Model<ElemType>::Get(config_);
     }
@@ -29,15 +29,20 @@ namespace LR
     {
         SampleReader<ElemType> *reader = nullptr;
         int batch_size = config_.mini_batch_size * 5;
-        Sample<ElemType> **batchsamples = new Sample<ElemType>[batch_size];
+        Sample<ElemType> **batchsamples = new Sample<ElemType>*[batch_size];
         int sample_count = 0;
         int epoch = config_.train_epoch;
         for (int i = 0; i < epoch; ++i)
         {
-            reader = new SampleReader<ElemType>(config_.train_file, config_.read_buffer_size, config_.input_dimention);
+            Log::Debug("Begin %dth epoch\n", i);
             sample_count = 0;
-            sample_count = reader->GetSample(batch_size, batchsamples);
-            model_->Train(sample_count, batchsamples);
+            reader = new SampleReader<ElemType>(config_.train_file, config_.read_buffer_size, config_.input_dimention);
+            while(!reader->IsEndOfFile())
+            {
+                sample_count = reader->GetSample(batch_size, batchsamples);
+                model_->Train(sample_count, batchsamples);
+                reader->Free(sample_count);
+            }
             delete reader;
         }
         delete batchsamples;

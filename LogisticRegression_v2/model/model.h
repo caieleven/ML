@@ -78,6 +78,7 @@ namespace LR
     template <typename ElemType>
     void Model<ElemType>::Train(int num, Sample<ElemType> **samples)
     {
+        Log::Info("Train with %d samples\n", num);
         for (int i = 0; i < num; i += mini_batch_size_)
         {
             delta_.clear();
