@@ -25,9 +25,9 @@ namespace LR
          * @param size data size
          * @return the true size of data
          */
-        size_t Read(void *buf, size_t size);
+        inline size_t Read(void *buf, size_t size);
 
-        bool Good();
+        inline bool Good();
     
     private:
         bool is_good_;
@@ -48,7 +48,6 @@ namespace LR
         size_t pos_, buf_size_, length_;
         FileOperator* op_;
     };
-
 
 
 }

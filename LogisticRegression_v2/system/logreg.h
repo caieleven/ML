@@ -37,6 +37,8 @@ namespace LR
             Log::Debug("Begin %dth epoch\n", i);
             sample_count = 0;
             reader = new SampleReader<ElemType>(config_.train_file, config_.read_buffer_size, config_.input_dimention);
+            Log::Info("Wait for data reading\n");
+            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
             while(!reader->IsEndOfFile())
             {
                 sample_count = reader->GetSample(batch_size, batchsamples);
@@ -50,6 +52,7 @@ namespace LR
     template <typename ElemType>
     void LogReg<ElemType>::SaveModel()
     {
+        model_->Store(config_);
     }
 
     template <typename ElemType>

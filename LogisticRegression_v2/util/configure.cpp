@@ -38,6 +38,7 @@ namespace LR
         VALUEMATCH(regular_coef, "float");
         VALUEMATCH(use_ps, "bool");
 
+
     }
 
     void Configure::ValueMatch(std::unordered_map<std::string, std::string> &map, std::string datatype, std::string key, void *keyp)

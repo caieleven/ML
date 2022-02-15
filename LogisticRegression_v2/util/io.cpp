@@ -30,7 +30,7 @@ namespace LR
         }
     }
 
-    size_t FileOperator::Read(void *buf, size_t size)
+    inline size_t FileOperator::Read(void *buf, size_t size)
     {
         return std::fread(buf, 1, size, fp_);
     }
@@ -44,7 +44,7 @@ namespace LR
         }
     }
 
-    bool FileOperator::Good()
+    inline bool FileOperator::Good()
     {
         return is_good_;
     }
@@ -102,5 +102,6 @@ namespace LR
         delete op_;
         delete [] buf_;
     }
+
 
 }
