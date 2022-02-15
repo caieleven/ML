@@ -5,13 +5,26 @@
 
 // using namespace std;
 
+// class A
+// {
+// public:
+//     virtual void func()
+//     {
+//         printf("jjj");
+//     }
+// };
+
+// class B: public A
+// {
+
+// };
+
+
 
 // int main()
 // {
-//     vector<int> vec(2);
-//     vec[0] = 5;
-//     vec[0] += 5;;
-//     cout << vec[0] << endl;
+//     B b=B();
+//     b.func();
 //     return 0;
 // }
 

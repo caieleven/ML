@@ -35,6 +35,7 @@ namespace LR
         int mini_batch_size_;
         float alpha_;
         float alpha_coef_;
+        Configure cconfig_;
     };
 
     // template <typename ElemType>
@@ -57,7 +58,7 @@ namespace LR
     }
 
     template <typename ElemType>
-    Model<ElemType>::Model(const Configure &config)
+    Model<ElemType>::Model(const Configure &config):cconfig_(config)
     {
         Log::Info("Init local model\n");
         size_t size = config.input_dimention * config.output_dimention;
@@ -73,7 +74,7 @@ namespace LR
         update_count_ = 0;
         mini_batch_size_ = config.mini_batch_size;
         alpha_ = config.learning_rate;
-        alpha_coef_ = 0.01;
+        alpha_coef_ = 0.0001;
     }
 
     template <typename ElemType>
@@ -88,9 +89,10 @@ namespace LR
         Log::Info("Train with %d samples\n", num);
         for (int i = 0; i < num; i += mini_batch_size_)
         {
-            Log::Debug("Train model[1] = %f model.size=%d\n", weight_[1], weight_.size());
-            Log::Debug("Train delta[1] = %f delta.size=%d\n", delta_[1], delta_.size());
-            delta_.clear();
+            //Log::Debug("Train model[1] = %f model.size=%d\n", weight_[1], weight_.size());
+            //Log::Debug("Train delta[1] = %f delta.size=%d\n", delta_[1], delta_.size());
+            for(size_t idx = 0; idx < delta_.size(); ++idx)
+                delta_[idx] = 0;
             int upper = i + mini_batch_size_;
             upper = upper > num ? num : upper;
             for (int j = i; j < upper; ++j)
@@ -110,22 +112,20 @@ namespace LR
         float talpha = 1.0 / (1 + alpha_coef_ * update_count_) * alpha_;
         alpha_ = talpha > 0.001 ? talpha : 0.001;
         Log::Debug("alpha_ = %f\n", alpha_);
-        // Log::Debug("updata size=%d\n", weight_.size());
+        //Log::Debug("updata size=%d\n", delta_.size());
         for (size_t i = 0; i < weight_.size(); ++i)
         {
             weight_[i] -= alpha_ * delta_[i];
-            Log::Debug("jisuanchengfa\n");
-            Log::Debug("alpha_ * delta = %f\n", alpha_ * delta_[1]);
-            Log::Debug("model[1] = %f\n", weight_[1]);
-            Log::Debug("delta[1] = %f\n", delta_[1]);
         }
+        Store(cconfig_);
+        
     }
 
     template <typename ElemType>
     void Model<ElemType>::Store(const Configure &config) const
     {
         Log::Info("Store Model to %s\n", config.model_file.c_str());
-        FileOperator fp(config.model_file, FileOpenMode::Write);
+        FileOperator fp(config.model_file, FileOpenMode::Append);
         std::string str;
         std::stringstream ss;
         for (size_t i = 0; i < weight_.size(); ++i)

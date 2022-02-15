@@ -27,6 +27,8 @@ namespace LR
          */
         inline size_t Read(void *buf, size_t size);
 
+        //void Append(const void *buf, size_t size);
+
         inline bool Good();
     
     private:
