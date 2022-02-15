@@ -21,11 +21,28 @@ int main()
     int batch_size = 10;
     Sample<float> **batchsamples = new Sample<float>*[batch_size];
     SampleReader<float> reader(file, readnum, dimention);
-    
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    int cn = 0;
     while(!reader.IsEndOfFile())
-    {cout << "hhh" << endl;
-        reader.GetSample(batch_size, batchsamples);
-        printf("%d\n", batchsamples[0]->label);
+    {
+        cout << "hhh" << endl;
+        int count = reader.GetSample(batch_size, batchsamples);
+        reader.Free(count);
+        printf("%d\n", ++cn);
+        cout << "bbb" << endl;
     }
     return 0;
 }
+
+// void myprint()
+// {
+//     cout << "hello world!" << endl;
+// }
+
+
+// int main()
+// {
+//     thread myjob(myprint);
+//     myjob.join();
+//     return 0;
+// }

@@ -112,6 +112,7 @@ namespace LR
     SampleReader<ElemType>::~SampleReader()
     {
         DeleteSampleBuff<ElemType>(buffer_, buffer_size_);
+        stop_ = true;
         th_->join();
         delete buffer_;
         delete reader_;
@@ -132,7 +133,7 @@ namespace LR
     template <typename ElemType>
     int SampleReader<ElemType>::GetSample(int buffer_size, Sample<ElemType> **buffer)
     {
-        //Log::Debug("begin to load data from SampleReader\n");
+        Log::Debug("begin to load data from SampleReader\n");
         int size;
         {
             std::lock_guard<std::mutex> lock(mutex_);
@@ -151,6 +152,7 @@ namespace LR
     template <typename ElemType>
     void SampleReader<ElemType>::Read()
     {
+        Log::Debug("Start read thread!\n");
         while (1)
         {
             while (eof_ && !stop_)
@@ -160,8 +162,10 @@ namespace LR
             }
             std::string line;
             std::unique_lock<std::mutex> lock(mutex_);
+            int count = 0;
             while (reader_->GetLine(line) && (!stop_))
             {
+                Log::Debug("Read %dth line\n", ++count);
                 if (length_ == buffer_size_)
                 {
                     cv_.wait(lock);
