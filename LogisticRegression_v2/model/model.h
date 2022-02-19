@@ -74,7 +74,7 @@ namespace LR
         update_count_ = 0;
         mini_batch_size_ = config.mini_batch_size;
         alpha_ = config.learning_rate;
-        alpha_coef_ = 0.0001;
+        alpha_coef_ = 0.000001;
     }
 
     template <typename ElemType>
@@ -117,7 +117,7 @@ namespace LR
         {
             weight_[i] -= alpha_ * delta_[i];
         }
-        Store(cconfig_);
+        //Store(cconfig_);
         
     }
 
