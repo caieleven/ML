@@ -155,11 +155,14 @@ namespace LR
     template <typename ElemType>
     SoftmaxObjective<ElemType>::SoftmaxObjective(const Configure &config) : Objective<ElemType>(config)
     {
+
     }
 
     template <typename ElemType>
     inline void SoftmaxObjective<ElemType>::Gradient(Sample<ElemType> *sample, std::vector<ElemType> &model, std::vector<ElemType> &gradient)
     {
+        ElemType* loss = new ElemType[this->output_dimention_];
+        
         // //计算损失函数值
         // float hvalue = Sigmoid(sample, model);
         // //计算误差

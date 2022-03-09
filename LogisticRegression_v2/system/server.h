@@ -1,7 +1,7 @@
 /*
  * @Author: Baorun Chen
  * @Date: 2022-03-07 23:09:40
- * @LastEditTime: 2022-03-08 13:53:03
+ * @LastEditTime: 2022-03-09 21:10:12
  * @Description:
  */
 #include "ps/ps.h"
@@ -33,7 +33,7 @@ namespace LR
                 ps::Key key = req_data.keys[i];
                 if (req_meta.push)
                 {
-                    store[key] += req_data.vals[i];
+                    store[key] -= req_data.vals[i];
                 }
                 else
                 {
