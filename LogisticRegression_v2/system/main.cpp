@@ -1,6 +1,9 @@
 #include "logreg.h"
 #include "server.h"
 #include "log.h"
+using namespace LR;
+using namespace ps;
+
 
 int main()
 {

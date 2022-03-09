@@ -123,10 +123,10 @@ namespace LR
         //Log::Debug("sample label=%d\n", sample->label);
         //Log::Debug("hvalue=%f\n", hvalue);
         //计算损失值并输出
-        Log::Debug("loss = %f\n", Loss(sample, hvalue));
+        //Log::Debug("loss = %f\n", Loss(sample, hvalue));
         //计算误差
         hvalue -= sample->label;
-        Log::Debug("hvalue = %.15f\n", hvalue);
+        //Log::Debug("hvalue = %.15f\n", hvalue);
         //添加正则化项
         for (size_t i = 0; i < this->input_dimention_; ++i)
         {

@@ -45,10 +45,11 @@ namespace LR
     public:
         PSModel(const Configure &config);
         void Update();
+        virtual void Train(int num, Sample<ElemType> ** samples);
 
     private:
         ps::KVWorker<float> *kv_;
-        std::vector<int> keys_;
+        std::vector<ps::Key> keys_;
     };
 
     // template <typename ElemType>
@@ -65,9 +66,17 @@ namespace LR
     Model<ElemType> *Model<ElemType>::Get(const Configure &config)
     {
         if (config.use_ps)
-            return new Model<ElemType>(config);
+        {
+            Log::Info("Initialize PS Model\n");
+            return new PSModel<ElemType>(config);
+        }
+            
         else
+        {
+            Log::Info("Initialize Loacal Model\n");
             return new Model<ElemType>(config);
+        }
+            
     }
 
     template <typename ElemType>
@@ -158,7 +167,8 @@ namespace LR
         keys_.reserve(size);
         for (size_t i = 0; i < size; ++i)
         {
-            keys_[i] = i;
+            //keys_[i] = i;
+            keys_.push_back(i);
         }
     }
 
@@ -172,9 +182,34 @@ namespace LR
         // Log::Debug("updata size=%d\n", delta_.size());
         for (size_t i = 0; i < this->delta_.size(); ++i)
         {
-            this->delta_[i] -= this->alpha_ * this->delta_[i];
+            this->delta_[i] = this->alpha_ * this->delta_[i];
         }
         kv_->Wait(kv_->Push(keys_, this->delta_));
     }
+
+    template <typename ElemType>
+    void PSModel<ElemType>::Train(int num, Sample<ElemType> **samples)
+    {
+        Log::Info("Train with %d samples\n", num);
+        for (int i = 0; i < num; i += this->mini_batch_size_)
+        {
+            kv_->Wait(kv_->Pull(keys_, &this->weight_));
+            // Log::Debug("Train model[1] = %f model.size=%d\n", weight_[1], weight_.size());
+            // Log::Debug("Train delta[1] = %f delta.size=%d\n", delta_[1], delta_.size());
+            for (size_t idx = 0; idx < this->delta_.size(); ++idx)
+                this->delta_[idx] = 0;
+            int upper = i + this->mini_batch_size_;
+            upper = upper > num ? num : upper;
+            for (int j = i; j < upper; ++j)
+                this->objective_->Gradient(samples[j], this->weight_, this->delta_);
+            int batch_size = upper - i;
+            if (batch_size > 1)
+                for (size_t k = 0; k < this->delta_.size(); ++k)
+                    this->delta_[k] = static_cast<ElemType>(this->delta_[k] / static_cast<double>(batch_size));
+            this->Update();
+        }
+    }
+
+
 
 }

@@ -1,13 +1,13 @@
 /*
  * @Author: Baorun Chen
  * @Date: 2022-03-07 23:09:40
- * @LastEditTime: 2022-03-07 23:13:05
+ * @LastEditTime: 2022-03-08 13:53:03
  * @Description:
  */
 #include "ps/ps.h"
 #include "log.h"
 
-namespace
+namespace LR
 {
 
     template <typename Val>
@@ -30,7 +30,7 @@ namespace
             }
             for (size_t i = 0; i < n; ++i)
             {
-                Key key = req_data.keys[i];
+                ps::Key key = req_data.keys[i];
                 if (req_meta.push)
                 {
                     store[key] += req_data.vals[i];
@@ -44,7 +44,7 @@ namespace
             //     Log::Debug("After push, the weight[1]:%f\n", store[1]);
             server->Response(req_meta, res);
         }
-        std::unordered_map<Key, Val> store;
+        std::unordered_map<ps::Key, Val> store;
     };
 
     void startServer()
@@ -53,6 +53,7 @@ namespace
             return;
         auto server = new ps::KVServer<float>(0);
         server->set_request_handle(KVServerHandle<float>());
-        Log::Write(LogLevel::Debug, "Start Server!\n");
+        //Log::Write(LogLevel::Debug, "Start Server!\n");
+        LR::Log::Debug("Start server\n");
     }
 }
