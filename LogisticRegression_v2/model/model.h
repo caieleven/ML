@@ -83,7 +83,7 @@ namespace LR
     Model<ElemType>::Model(const Configure &config) : cconfig_(config)
     {
         Log::Info("Init local model\n");
-        size_t size = config.input_dimention * config.output_dimention;
+        size_t size = (config.input_dimention + 1) * config.output_dimention;
         objective_ = Objective<ElemType>::Get(config);
         weight_.reserve(size);
         delta_.reserve(size);
@@ -162,7 +162,7 @@ namespace LR
     template <typename ElemType>
     PSModel<ElemType>::PSModel(const Configure &config) : Model<ElemType>(config)
     {
-        size_t size = config.input_dimention * config.output_dimention;
+        size_t size = (config.input_dimention + 1) * config.output_dimention;
         kv_ = new ps::KVWorker<float>(0, 0);
         keys_.reserve(size);
         for (size_t i = 0; i < size; ++i)

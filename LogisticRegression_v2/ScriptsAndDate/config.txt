@@ -7,3 +7,4 @@ train_epoch=4
 regularizer=L1
 mini_batch_size=20
 use_ps=true
+objective_type=sigmoid
