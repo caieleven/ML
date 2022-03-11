@@ -16,6 +16,21 @@ namespace LR
         virtual ~Model();
         virtual void Train(int num, Sample<ElemType> **samples);
         inline virtual void Update();
+        
+        /**
+         * @param num 样本数量
+         * @param samples 样本
+         * @return 返回正确预测的样本数
+         */
+        inline virtual int Test(int num, Sample<ElemType>** samples);
+        
+        
+        /**
+         * @param sample 需要预测的样本
+         * @return 预测结果
+         */
+        inline virtual int Predict(Sample<ElemType>* sample);
+
         /**
          * @brief 将模型权重以文本格式存储
          * @param config 其中包含存放model的文件路径
@@ -128,12 +143,32 @@ namespace LR
     }
 
     template <typename ElemType>
+    int Model<ElemType>::Test(int num, Sample<ElemType>** samples)
+    {
+        Log::Info("Begin to test with %d samples\n", num);
+        int cont = 0;
+        for (int i = 0; i < num; ++i)
+        {
+            int cls = this->Predict(samples[i]);
+            if(cls == samples[i]->label)
+                ++cont;
+        }
+        return cont;
+    }
+
+    template <typename ElemType>
+    inline int Model<ElemType>::Predict(Sample<ElemType>* sample)
+    {
+        return objective_->Predict(weight_, sample);
+    }
+
+    template <typename ElemType>
     inline void Model<ElemType>::Update()
     {
         ++update_count_;
         float talpha = 1.0 / (1 + alpha_coef_ * update_count_) * alpha_;
         alpha_ = talpha > 0.001 ? talpha : 0.001;
-        Log::Debug("alpha_ = %f\n", alpha_);
+        // Log::Debug("alpha_ = %f\n", alpha_);
         // Log::Debug("updata size=%d\n", delta_.size());
         for (size_t i = 0; i < weight_.size(); ++i)
         {
@@ -178,7 +213,7 @@ namespace LR
         ++this->update_count_;
         float talpha = 1.0 / (1 + this->alpha_coef_ * this->update_count_) * this->alpha_;
         this->alpha_ = talpha > 0.001 ? talpha : 0.001;
-        Log::Debug("alpha_ = %f\n", this->alpha_);
+        // Log::Debug("alpha_ = %f\n", this->alpha_);
         // Log::Debug("updata size=%d\n", delta_.size());
         for (size_t i = 0; i < this->delta_.size(); ++i)
         {

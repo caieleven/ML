@@ -26,8 +26,9 @@ namespace LR
          * @param hvalue 假设函数值
          * @return 损失函数值
          */
-        inline virtual float Loss(Sample<ElemType> *sample, float* hvalue);
-        inline virtual void Gradient(Sample<ElemType> *sample, std::vector<ElemType> &model, std::vector<ElemType> &gradient);
+        inline virtual float Loss(Sample<ElemType> *sample, float *hvalue) = 0;
+        inline virtual int Predict(std::vector<ElemType> &model, Sample<ElemType> *sample) = 0;
+        inline virtual void Gradient(Sample<ElemType> *sample, std::vector<ElemType> &model, std::vector<ElemType> &gradient) = 0;
 
     protected:
         inline float MathLog(float x);
@@ -42,9 +43,10 @@ namespace LR
     public:
         SigmoidObjective(const Configure &config);
         // virtual ~SigmoidObjective();
-        inline virtual float Loss(Sample<ElemType> *sample, float* hvalue) override;
+        inline virtual float Loss(Sample<ElemType> *sample, float *hvalue) override;
         inline virtual void Gradient(Sample<ElemType> *sample, std::vector<ElemType> &model, std::vector<ElemType> &gradient) override;
         inline float Sigmoid(Sample<ElemType> *sample, std::vector<ElemType> &model);
+        inline virtual int Predict(std::vector<ElemType> &model, Sample<ElemType> *sample);
     };
 
     template <typename ElemType>
@@ -54,7 +56,9 @@ namespace LR
         SoftmaxObjective(const Configure &config);
         // virtual ~SoftmaxObjective();
         inline virtual void Gradient(Sample<ElemType> *sample, std::vector<ElemType> &model, std::vector<ElemType> &gradient) override;
-        inline virtual float Loss(Sample<ElemType> *sample, float* hvalue) override;
+        inline virtual float Loss(Sample<ElemType> *sample, float *hvalue) override;
+        inline virtual int Predict(std::vector<ElemType> &model, Sample<ElemType> *sample);
+        inline void Softmax(Sample<ElemType> *sample, std::vector<ElemType> &model, ElemType *hvalue);
     };
 
     // base
@@ -73,7 +77,8 @@ namespace LR
         }
         else
         {
-            return new Objective<ElemType>(config);
+            // TODO
+            return nullptr;
         }
     }
 
@@ -91,20 +96,9 @@ namespace LR
     }
 
     template <typename ElemType>
-    inline void Objective<ElemType>::Gradient(Sample<ElemType> *sample, std::vector<ElemType> &model, std::vector<ElemType> &gradient)
-    {
-    }
-
-    template <typename ElemType>
     inline float Objective<ElemType>::MathLog(float x)
     {
         return log(x < 0.000001f ? 0.000001f : x);
-    }
-
-    template <typename ElemType>
-    inline float Objective<ElemType>::Loss(Sample<ElemType> *sample, float* hvalue)
-    {
-        return 0;
     }
 
     // Sigmoid
@@ -120,13 +114,13 @@ namespace LR
         // Log::Debug("sample[0]=%f\n", sample->features[0]);
         //计算假设函数函数值
         float hvalue = Sigmoid(sample, model);
-        //Log::Debug("sample label=%d\n", sample->label);
-        //Log::Debug("hvalue=%f\n", hvalue);
+        // Log::Debug("sample label=%d\n", sample->label);
+        // Log::Debug("hvalue=%f\n", hvalue);
         //计算损失值并输出
-        //Log::Debug("loss = %f\n", Loss(sample, &hvalue));
+        // Log::Debug("loss = %f\n", Loss(sample, &hvalue));
         //计算误差
         hvalue -= sample->label;
-        //Log::Debug("hvalue = %.15f\n", hvalue);
+        // Log::Debug("hvalue = %.15f\n", hvalue);
         //添加正则化项
         for (size_t i = 0; i < this->input_dimention_; ++i)
         {
@@ -137,18 +131,18 @@ namespace LR
     template <typename ElemType>
     float SigmoidObjective<ElemType>::Sigmoid(Sample<ElemType> *sample, std::vector<ElemType> &model)
     {
-        //Log::Debug("lf=%lf\n", 1.0f + exp(-Dot(model, sample)));
-        //Log::Debug("dot=%f\n", 1.0f / (1.0f + exp(-Dot(model, sample))));
-        //return static_cast<float>(1.0f / (1.0f + exp(-Dot(model, sample))));
+        // Log::Debug("lf=%lf\n", 1.0f + exp(-Dot(model, sample)));
+        // Log::Debug("dot=%f\n", 1.0f / (1.0f + exp(-Dot(model, sample))));
+        // return static_cast<float>(1.0f / (1.0f + exp(-Dot(model, sample))));
         float val = Dot(model, sample);
-        if(val >= 0)
+        if (val >= 0)
             return static_cast<float>(1.0f / (1.0f + exp(-val)));
         else
             return static_cast<float>(exp(val) / (1 + exp(val)));
     }
 
     template <typename ElemType>
-    inline float SigmoidObjective<ElemType>::Loss(Sample<ElemType> *sample, float* hvalue)
+    inline float SigmoidObjective<ElemType>::Loss(Sample<ElemType> *sample, float *hvalue)
     {
         if (sample->label == 1)
             return -this->MathLog(*hvalue);
@@ -156,6 +150,12 @@ namespace LR
             return -this->MathLog(1.0f - *hvalue);
     }
 
+    template <typename ElemType>
+    inline int SigmoidObjective<ElemType>::Predict(std::vector<ElemType> &model, Sample<ElemType> *sample)
+    {
+        float hvalue = Sigmoid(sample, model);
+        return hvalue >= 0.5 ? 1 : 0;
+    }
     // Softmax
     template <typename ElemType>
     SoftmaxObjective<ElemType>::SoftmaxObjective(const Configure &config) : Objective<ElemType>(config)
@@ -165,55 +165,71 @@ namespace LR
     template <typename ElemType>
     inline void SoftmaxObjective<ElemType>::Gradient(Sample<ElemType> *sample, std::vector<ElemType> &model, std::vector<ElemType> &gradient)
     {
-        ElemType* hvalue = new ElemType[this->output_dimention_];
+        ElemType *hvalue = new ElemType[this->output_dimention_];
+        Softmax(sample, model, hvalue);
+        size_t idx = 0;
+        for (int i = 0; i < this->output_dimention_; ++i)
+        {
+            for (size_t j = 0; j < this->input_dimention_; ++j)
+            {
+                gradient[idx] += hvalue[i] * sample->features[j] + this->regular_->AddTerm(idx, model);
+                ++idx;
+            }
+        }
+        delete hvalue;
+    }
+
+    template <typename ElemType>
+    inline void SoftmaxObjective<ElemType>::Softmax(Sample<ElemType> *sample, std::vector<ElemType> &model, ElemType *hvalue)
+    {
         float sum = 0.0f;
-        for(int i = 0; i < this->output_dimention_; ++i)
+        for (int i = 0; i < this->output_dimention_; ++i)
         {
             hvalue[i] = Dot(model, sample, i * this->input_dimention_);
         }
         float max = static_cast<float>(hvalue[0]);
-        for(int i = 1; i < this->output_dimention_; ++i)
+        for (int i = 1; i < this->output_dimention_; ++i)
         {
             max = static_cast<float>(max < hvalue[i] ? hvalue[i] : max);
         }
-        for(int i = 0; i < this->output_dimention_; ++i)
+        for (int i = 0; i < this->output_dimention_; ++i)
         {
             hvalue[i] = static_cast<ElemType>(exp(hvalue[i] - max));
             sum += hvalue[i];
         }
-        for(int i = 0; i < this->output_dimention_; ++i)
+        for (int i = 0; i < this->output_dimention_; ++i)
         {
             hvalue[i] = static_cast<ElemType>(hvalue[i] / sum);
         }
-        for(int i = 0; i < this->output_dimention_; ++i)
+        for (int i = 0; i < this->output_dimention_; ++i)
         {
             hvalue -= static_cast<int>(sample->label == i);
         }
-
-        size_t idx = 0;
-        for(int i = 0; i < this->output_dimention_; ++i)
-        {
-            for(size_t j = 0; j < this->input_dimention_; ++j)
-            {
-                gradient[idx] += hvalue[i]*sample->features[j] + this->regular_->AddTerm(idx, model); 
-            }
-        }
-
-        // //计算损失函数值
-        // float hvalue = Sigmoid(sample, model);
-        // //计算误差
-        // hvalue -= sample->label;
-        // //添加正则化项
-        // for(size_t i = 0; i < input_dimention_; ++i)
-        // {
-        //     gradient[i] += hvalue * (sample->label[i]) + this->regular_->AddTerm(i, model);
-        // }
     }
 
     template <typename ElemType>
-    inline float SoftmaxObjective<ElemType>::Loss(Sample<ElemType> *sample, float* hvalue)
+    inline float SoftmaxObjective<ElemType>::Loss(Sample<ElemType> *sample, float *hvalue)
     {
         return 0;
+    }
+
+    template <typename ElemType>
+    inline int SoftmaxObjective<ElemType>::Predict(std::vector<ElemType> &model, Sample<ElemType> *sample)
+    {
+        ElemType* hvalue = new ElemType[this->output_dimention_];
+        Softmax(sample, model, hvalue);
+        int cls = 0;
+        ElemType max = hvalue[0];
+        for(int i = 1; i < this->output_dimention_; ++i)
+        {
+            if(max < hvalue[i])
+            {
+                max = hvalue[i];
+                cls = i;
+            }
+        }
+        delete hvalue;
+        return cls;
     }
 
 }

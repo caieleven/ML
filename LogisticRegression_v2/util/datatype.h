@@ -50,7 +50,8 @@ namespace LR
     inline float Dot(std::vector<ElemType> &model, Sample<ElemType> *sample, size_t idx = 0)
     {
         float sum = 0;
-        size_t size = model.size();
+        // size_t size = model.size();s
+        size_t size = sample->features.size();
         for (size_t i = 0; i < size; ++i)
         {
             sum += model[i + idx] * sample->features[i];
