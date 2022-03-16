@@ -30,7 +30,7 @@ namespace LR
     {
         SampleReader<ElemType> *reader = nullptr;
         int batch_size = config_.mini_batch_size * 5;
-        Sample<ElemType> **batchsamples = new Sample<ElemType>*[batch_size];
+        Sample<ElemType> **batchsamples = new Sample<ElemType> *[batch_size];
         int sample_count = 0;
         int epoch = config_.train_epoch;
         for (int i = 0; i < epoch; ++i)
@@ -40,7 +40,7 @@ namespace LR
             reader = new SampleReader<ElemType>(config_.train_file, config_.read_buffer_size, config_.input_dimention);
             Log::Info("Wait for data reading\n");
             std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-            while(!reader->IsEndOfFile())
+            while (!reader->IsEndOfFile())
             {
                 sample_count = reader->GetSample(batch_size, batchsamples);
                 model_->Train(sample_count, batchsamples);
@@ -60,33 +60,27 @@ namespace LR
     template <typename ElemType>
     void LogReg<ElemType>::Test()
     {
+        Log::Info("Begin to Test with file %s\n", config_.test_file.c_str());
         SampleReader<ElemType> *reader = nullptr;
-        int batch_size = config_.mini_batch_size * 5;
-        Sample<ElemType> **batchsamples = new Sample<ElemType>*[batch_size];
-        int sample_count = 0;
-        int epoch = config_.train_epoch;
-        for (int i = 0; i < epoch; ++i)
+        int batch_size = config_.mini_batch_size;
+        Sample<ElemType> **batchsamples = new Sample<ElemType> *[batch_size];
+        int sample_count = 0, correct_count = 0, sample_num = 0;
+        reader = new SampleReader<ElemType>(config_.test_file, config_.read_buffer_size, config_.input_dimention);
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+        while (!reader->IsEndOfFile())
         {
-            Log::Debug("Begin %dth epoch\n", i);
-            sample_count = 0;
-            reader = new SampleReader<ElemType>(config_.train_file, config_.read_buffer_size, config_.input_dimention);
-            Log::Info("Wait for data reading\n");
-            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-            while(!reader->IsEndOfFile())
-            {
-                sample_count = reader->GetSample(batch_size, batchsamples);
-                model_->Train(sample_count, batchsamples);
-                reader->Free(sample_count);
-            }
-            SaveModel();
-            delete reader;
+            sample_num = reader->GetSample(batch_size, batchsamples);
+            sample_count += sample_num;
+            correct_count += model_->Test(sample_num, batchsamples);
+            reader->Free(sample_count);
         }
+        delete reader;
         delete batchsamples;
+        Log::Info("Accuracy is %f\n", 1.0f * correct_count / sample_count);
     }
 
     template <typename ElemType>
     void LogReg<ElemType>::Predict()
     {
-        
     }
 }

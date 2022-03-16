@@ -14,7 +14,8 @@ int main()
         std::string config("/home/caieleven/ML/LogisticRegression_v2/ScriptsAndDate/config.txt");
         LR::LogReg<float> logreg(config);
         logreg.Train();
-        logreg.SaveModel();
+        if(ps::MyRank() == 0)
+            logreg.Test();
     }
     ps::Finalize(0, true);
     return 0;
