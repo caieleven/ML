@@ -115,9 +115,9 @@ namespace LR
         //计算假设函数函数值
         float hvalue = Sigmoid(sample, model);
         // Log::Debug("sample label=%d\n", sample->label);
-        // Log::Debug("hvalue=%f\n", hvalue);
+        Log::Debug("hvalue=%f\n", hvalue);
         //计算损失值并输出
-        Log::Debug("loss = %f\n", Loss(sample, &hvalue));
+        // Log::Debug("loss = %f\n", Loss(sample, &hvalue));
         //计算误差
         hvalue -= sample->label;
         // Log::Debug("hvalue = %.15f\n", hvalue);
@@ -126,15 +126,17 @@ namespace LR
         {
             gradient[i] += hvalue * (sample->features[i]) + this->regular_->AddTerm(i, model);
         }
+        //Log::Debug("gradient[1] = %f\n", gradient[1]);
     }
 
     template <typename ElemType>
-    float SigmoidObjective<ElemType>::Sigmoid(Sample<ElemType> *sample, std::vector<ElemType> &model)
+    inline float SigmoidObjective<ElemType>::Sigmoid(Sample<ElemType> *sample, std::vector<ElemType> &model)
     {
         // Log::Debug("lf=%lf\n", 1.0f + exp(-Dot(model, sample)));
         // Log::Debug("dot=%f\n", 1.0f / (1.0f + exp(-Dot(model, sample))));
         // return static_cast<float>(1.0f / (1.0f + exp(-Dot(model, sample))));
         float val = Dot(model, sample);
+        // Log::Debug("val = %f\n", val);
         if (val >= 0)
             return static_cast<float>(1.0f / (1.0f + exp(-val)));
         else

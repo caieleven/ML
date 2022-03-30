@@ -174,7 +174,7 @@ namespace LR
         {
             weight_[i] -= alpha_ * delta_[i];
         }
-        // Store(cconfig_);
+        Store(cconfig_);
     }
 
     template <typename ElemType>

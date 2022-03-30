@@ -1,2 +1,4 @@
 **/build/*
 .vscode
+config.txt
+LR.model
