@@ -47,6 +47,7 @@ namespace LR
                 reader->Free(sample_count);
             }
             SaveModel();
+            Test();
             delete reader;
         }
         delete batchsamples;

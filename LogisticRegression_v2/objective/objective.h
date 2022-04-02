@@ -115,7 +115,7 @@ namespace LR
         //计算假设函数函数值
         float hvalue = Sigmoid(sample, model);
         // Log::Debug("sample label=%d\n", sample->label);
-        Log::Debug("hvalue=%f\n", hvalue);
+        // Log::Debug("hvalue=%f\n", hvalue);
         //计算损失值并输出
         // Log::Debug("loss = %f\n", Loss(sample, &hvalue));
         //计算误差
