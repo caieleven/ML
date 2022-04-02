@@ -1,10 +1,10 @@
-train_file=/home/caieleven/ML/DataSet/hd.txt
-test_file=/home/caieleven/ML/DataSet/hd.txt
+train_file=/home/caieleven/ML/DataSet/newhd.txt
+test_file=/home/caieleven/ML/DataSet/newhd.txt
 input_dimention=13
 output_dimention=1
 learning_rate=0.005
-train_epoch=1
+train_epoch=100
 regularizer=L1
-mini_batch_size=20
+mini_batch_size=10
 use_ps=false
 objective_type=sigmoid

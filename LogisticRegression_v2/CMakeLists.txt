@@ -13,7 +13,8 @@ link_directories(${PSLITE_DIR}/deps/lib ${PSLITE_DIR}/build)
 find_package(Threads REQUIRED)
 set(DEPS libps.a protobuf zmq Threads::Threads)
 
-
+set(CMAKE_BUILD_TYPE Debug)
+add_compile_options(-Wall -std=c++11)
 add_executable(LogisticRegression ${SRC_SYSTEM} ${SRC_UTIL})
 
 

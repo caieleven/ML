@@ -111,7 +111,7 @@ namespace LR
         update_count_ = 0;
         mini_batch_size_ = config.mini_batch_size;
         alpha_ = config.learning_rate;
-        alpha_coef_ = 0.000001;
+        alpha_coef_ = 0.00000;
     }
 
     template <typename ElemType>
