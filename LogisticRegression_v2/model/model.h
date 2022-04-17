@@ -97,7 +97,7 @@ namespace LR
     template <typename ElemType>
     Model<ElemType>::Model(const Configure &config) : cconfig_(config)
     {
-        Log::Info("Init local model\n");
+        // Log::Info("Init local model\n");
         size_t size = (config.input_dimention + 1) * config.output_dimention;
         objective_ = Objective<ElemType>::Get(config);
         weight_.reserve(size);
@@ -123,7 +123,7 @@ namespace LR
     template <typename ElemType>
     void Model<ElemType>::Train(int num, Sample<ElemType> **samples)
     {
-        Log::Info("Train with %d samples\n", num);
+        // Log::Info("Train with %d samples\n", num);
         for (int i = 0; i < num; i += mini_batch_size_)
         {
             // Log::Debug("Train model[1] = %f model.size=%d\n", weight_[1], weight_.size());
@@ -145,7 +145,7 @@ namespace LR
     template <typename ElemType>
     int Model<ElemType>::Test(int num, Sample<ElemType>** samples)
     {
-        Log::Info("Begin to test with %d samples\n", num);
+        // Log::Info("Begin to test with %d samples\n", num);
         int cont = 0;
         for (int i = 0; i < num; ++i)
         {
@@ -180,7 +180,7 @@ namespace LR
     template <typename ElemType>
     void Model<ElemType>::Store(const Configure &config) const
     {
-        Log::Info("Store Model to %s\n", config.model_file.c_str());
+        // Log::Info("Store Model to %s\n", config.model_file.c_str());
         FileOperator fp(config.model_file, FileOpenMode::Append);
         std::stringstream ss;
         for (size_t i = 0; i < weight_.size(); ++i)
@@ -242,7 +242,5 @@ namespace LR
             this->Update();
         }
     }
-
-
 
 }

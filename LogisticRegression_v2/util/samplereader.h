@@ -104,7 +104,7 @@ namespace LR
     {
         buffer_ = CreateSampleBuff<ElemType>(buffer_size_, input_dimention + 1);
         reader_ = new TextReader(file_);
-        Log::Info("SampleReader begin to read data from %s\n", file_.c_str());
+        // Log::Info("SampleReader begin to read data from %s\n", file_.c_str());
         th_ = new std::thread(&SampleReader<ElemType>::Read, this);
     }
 
@@ -152,12 +152,12 @@ namespace LR
     template <typename ElemType>
     void SampleReader<ElemType>::Read()
     {
-        Log::Debug("Start read thread!\n");
+        // Log::Debug("Start read thread!\n");
         while (1)
         {
             while (eof_ && !stop_)
             {
-                Log::Info("file %s read end, read thread sleep\n", file_.c_str());
+                // Log::Info("file %s read end, read thread sleep\n", file_.c_str());
                 std::this_thread::sleep_for(std::chrono::milliseconds(1000));
             }
             std::string line;
@@ -194,12 +194,13 @@ namespace LR
         data->features.emplace_back(1);
     }
 
+    // This function dosen't work properly. The bug needs to be solved
     template <typename ElemType>
     void SampleReader<ElemType>::Reset()
     {
-        //std::lock_guard lock(mutex_);
         stop_ = false;
         eof_ = false;
+        std::lock_guard<std::mutex> lock(mutex_);
         start_ = 0;
         end_ = 0;
         length_ = 0;

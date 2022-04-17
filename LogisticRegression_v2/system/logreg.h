@@ -37,8 +37,8 @@ namespace LR
         {
             Log::Debug("Begin %dth epoch\n", i);
             sample_count = 0;
-            // reader = new SampleReader<ElemType>(config_.train_file, config_.read_buffer_size, config_.input_dimention);
-            Log::Info("Wait for data reading\n");
+            reader = new SampleReader<ElemType>(config_.train_file, config_.read_buffer_size, config_.input_dimention);
+            // Log::Info("Wait for data reading\n");
             std::this_thread::sleep_for(std::chrono::milliseconds(1000));
             while (!reader->IsEndOfFile())
             {
@@ -47,9 +47,10 @@ namespace LR
                 reader->Free(sample_count);
             }
             SaveModel();
-            Test();
-            // delete reader;
-            reader->Reset();
+            if(ps::MyRank() == 0)
+                Test();
+            delete reader;
+            // reader->Reset();
         }
         delete batchsamples;
     }

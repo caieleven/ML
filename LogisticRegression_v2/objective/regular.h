@@ -1,4 +1,5 @@
 #include "configure.h"
+#include "log.h"
 #include <math.h>
 #include <vector>
 
@@ -47,6 +48,7 @@ namespace LR
     template <typename ElemType>
     Regular<ElemType> *Regular<ElemType>::Get(const Configure &config)
     {
+        Log::Info("Select %s regularizer.\n", config.regularizer.c_str());
         if (config.regularizer == "L1")
             return new L1Regular<ElemType>(config);
         else if (config.regularizer == "L2")
