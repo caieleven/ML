@@ -182,7 +182,6 @@ namespace LR
     {
         Log::Info("Store Model to %s\n", config.model_file.c_str());
         FileOperator fp(config.model_file, FileOpenMode::Append);
-        std::string str;
         std::stringstream ss;
         for (size_t i = 0; i < weight_.size(); ++i)
         {
@@ -202,7 +201,6 @@ namespace LR
         keys_.reserve(size);
         for (size_t i = 0; i < size; ++i)
         {
-            //keys_[i] = i;
             keys_.push_back(i);
         }
     }
@@ -225,7 +223,7 @@ namespace LR
     template <typename ElemType>
     void PSModel<ElemType>::Train(int num, Sample<ElemType> **samples)
     {
-        Log::Info("Train with %d samples\n", num);
+        // Log::Info("Train with %d samples\n", num);
         for (int i = 0; i < num; i += this->mini_batch_size_)
         {
             kv_->Wait(kv_->Pull(keys_, &this->weight_));
