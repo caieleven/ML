@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+  scheduler:
+    # image: "ml:v1"
+    build: .
+    hostname: scheduler
+    container_name: scheduler
+    environment:
+      - DMLC_PS_ROOT_URI=''
+      - DMLC_PS_ROOT_PORT=8080
+      - DMLC_ROLE='scheduler'
+      - DMLC_NUM_SERVER=${SERVER_NUM}
+      - DMLC_NUM_WORKER=${WORKER_NUM}
+  
+  server:
+    image: "ml:v1"
+    depends_on:
+      - scheduler
+    hostname: server
+    container_name: server
+    environment:
+      - DMLC_PS_ROOT_URI=''
+      - DMLC_PS_ROOT_PORT=8080
+      - DMLC_ROLE='server'
+
+  worker:
+    image: "ml:v1"
+    depends_on:
+      - scheduler
+    hostname: worker
+    container_name: worker
+    environment:
+      - DMLC_PS_ROOT_URI=''
+      - DMLC_PS_ROOT_PORT=8080
+      - DMLC_ROLE='worker'

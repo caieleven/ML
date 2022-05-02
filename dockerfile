@@ -12,7 +12,7 @@ RUN git clone https://github.com/caieleven/ML.git \
     && git clone https://github.com/caieleven/deps.git \
     && cd LogisticRegression_v2 \
     && mkdir build \
-    && cmake .. && make
+    && cmake .. && make \
 # 数据生成
 # TODO
 # 默认config存储位置

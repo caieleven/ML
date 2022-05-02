@@ -1,7 +1,7 @@
 ###
  # @Author: Baorun Chen
  # @Date: 2022-03-08 13:57:20
- # @LastEditTime: 2022-04-17 22:49:02
+ # @LastEditTime: 2022-05-02 00:58:57
  # @Description: 
 ### 
 #!/bin/bash
@@ -20,7 +20,8 @@ shift
 arg="$@"
 
 # start the scheduler
-export DMLC_PS_ROOT_URI='127.0.0.1'
+# export DMLC_PS_ROOT_URI='127.0.0.1'
+export DMLC_PS_ROOT_URI=$(ifconfig -a|grep inet|grep -v inet6|grep -v 172.*|awk '{print $2}')
 export DMLC_PS_ROOT_PORT=8019
 export DMLC_ROLE='scheduler'
 ${bin} ${arg} &
