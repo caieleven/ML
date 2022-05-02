@@ -54,5 +54,5 @@ networks:
     driver: overlay
     ipam:
       config:
-        - subnets: 172.30.0.0/55
+        - subnet: 172.30.0.0/55
           gateway: 172.30.0.1
