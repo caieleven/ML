@@ -19,7 +19,7 @@ end_idx = int(start_idx + sample_num / worker_num)
 print("sample_num:",sample_num)
 print("feature_num:",feature_num)
 
-filename = str(datasize) + "G" + str(worker_num) + "_" + str(worker_rank) + ".data"
+filename = str(datasize) + "G" + str(worker_num) + ".data"
 # filepath = /
 
 x, y = make_classification(n_samples=sample_num, n_features=feature_num, n_informative=feature_num, n_redundant=0, random_state=1000)
