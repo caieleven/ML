@@ -1,7 +1,7 @@
 /*
  * @Author: Baorun Chen
  * @Date: 2022-03-07 23:09:40
- * @LastEditTime: 2022-04-17 22:40:55
+ * @LastEditTime: 2022-05-03 11:38:10
  * @Description:
  */
 #include "ps/ps.h"
@@ -54,6 +54,6 @@ namespace LR
         auto server = new ps::KVServer<float>(0);
         server->set_request_handle(KVServerHandle<float>());
         //Log::Write(LogLevel::Debug, "Start Server!\n");
-        LR::Log::Info("Start server\n");
+        // LR::Log::Info("Start server\n");
     }
 }

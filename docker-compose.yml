@@ -2,18 +2,17 @@ version: '3'
 
 services:
   scheduler:
-    # image: "ml:v1"
-    build: .
+    image: "ml:v1"
     hostname: scheduler
     container_name: scheduler
     environment:
-      - DMLC_PS_ROOT_URI=''
+      - DMLC_PS_ROOT_URI='172.30.0.2'
       - DMLC_PS_ROOT_PORT=9000
       - DMLC_ROLE='scheduler'
       - DMLC_NUM_SERVER=${SERVER_NUM}
       - DMLC_NUM_WORKER=${WORKER_NUM}
     volumes:
-      -"/data/:/data/"
+      - /data/:/data/
     networks:
         mlnet:
           ipv4_address: 172.30.0.2
@@ -30,7 +29,7 @@ services:
       - DMLC_PS_ROOT_PORT=9000
       - DMLC_ROLE='server'
     volumes:
-      -"/data/:/data/"
+      - /data/:/data/
     networks:
       - mlnet
 
@@ -45,7 +44,7 @@ services:
       - DMLC_PS_ROOT_PORT=9000
       - DMLC_ROLE='worker'
     volumes:
-      -"/data/:/data/"
+      - /data/:/data/
     networks:
       - mlnet
 
@@ -54,5 +53,5 @@ networks:
     driver: overlay
     ipam:
       config:
-        - subnet: 172.30.0.0/55
-          gateway: 172.30.0.1
+        - subnet: 172.30.0.0/24
+          # gateway: 172.30.0.1

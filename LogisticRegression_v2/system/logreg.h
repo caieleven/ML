@@ -35,7 +35,8 @@ namespace LR
         int epoch = config_.train_epoch;
         for (int i = 0; i < epoch; ++i)
         {
-            Log::Debug("Begin %dth epoch\n", i);
+            if(ps::MyRank() == 0)
+                Log::Info("Begin %dth epoch\n", i);
             sample_count = 0;
             reader = new SampleReader<ElemType>(config_.train_file, config_.read_buffer_size, config_.input_dimention);
             // Log::Info("Wait for data reading\n");
@@ -46,9 +47,9 @@ namespace LR
                 model_->Train(sample_count, batchsamples);
                 reader->Free(sample_count);
             }
-            SaveModel();
-            if(ps::MyRank() == 0)
-                Test();
+            // SaveModel();
+            // if(ps::MyRank() == 0)
+            //     Test();
             delete reader;
             // reader->Reset();
         }
