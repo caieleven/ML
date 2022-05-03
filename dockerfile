@@ -11,8 +11,8 @@ WORKDIR /code
 RUN git clone https://github.com/caieleven/ML.git \
     && cd ML \
     && pip install -r requirement.txt -i http://mirrors.aliyun.com/pypi/simple \
-    && rm -rf ps-lite .* \
     && git clone https://github.com/caieleven/deps.git \
+    && mv ./deps/ps-lite/* ./ps-lite \
     && cd LogisticRegression_v2 \
     && mkdir build \
     && cmake .. && make \
